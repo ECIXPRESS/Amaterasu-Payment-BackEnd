@@ -452,4 +452,3 @@ Cada miembro del equipo asumió un rol dentro del marco de Scrum:
 ### 🚀 ECIEXPRES nació como una idea para optimizar los procesos académicos y terminó convirtiéndose en un proyecto que combina tecnología, trabajo en equipo y propósito!
 
 ---
-
