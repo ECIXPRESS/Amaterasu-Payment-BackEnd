@@ -1,43 +1,5 @@
 # Amaterasu-Transaction-BackEnd
 
-![ci-cd](https://github.com/ROMANOS-SIHRA/Backend_ECIExpress_Romanos_2025-2/actions/workflows/ci-cd.yml/badge.svg)
-![Java](https://img.shields.io/badge/Java-17-orange)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-green)
-![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
-![Azure](https://img.shields.io/badge/Azure-App%20Service-0078D4)
-[![API Status](https://img.shields.io/website?url=https%3A%2F%2FECIExpress-backend-api.azurewebsites.net%2Factuator%2Fhealth)](https://ECIExpress-backend-api.azurewebsites.net/actuator/health)
-
-
-![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green?logo=mongodb)
-![Maven](https://img.shields.io/badge/Maven-3.9+-red?logo=apache-maven)
-![JUnit](https://img.shields.io/badge/JUnit-5-yellow?logo=junit5)
-![Swagger](https://img.shields.io/badge/Swagger-OpenAPI%203-85EA2D?logo=swagger)
-![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-blue?logo=github-actions)
-
-
-![Code Coverage](https://img.shields.io/badge/Coverage-85%25-brightgreen)
-![Quality Gate](https://img.shields.io/badge/Quality%20Gate-Passed-success?logo=sonarqube)
-![Security Rating](https://img.shields.io/badge/Security-A-brightgreen?logo=sonarqube)
-![Maintainability](https://img.shields.io/badge/Maintainability-A-brightgreen?logo=sonarqube)
-![Technical Debt](https://img.shields.io/badge/Tech%20Debt-Low-green)
-
-
-
-
-![Deployment](https://img.shields.io/badge/Deployment-Automated-success)
-![Environment](https://img.shields.io/badge/Environment-Production-red)
-![Response Time](https://img.shields.io/badge/Response%20Time-<200ms-brightgreen)
-
-![HTTPS](https://img.shields.io/badge/HTTPS-Enabled-green?logo=letsencrypt)
-![CORS](https://img.shields.io/badge/CORS-Configured-blue)
-![API](https://img.shields.io/badge/API-RESTful-orange)
-![Authentication](https://img.shields.io/badge/Auth-JWT-purple)
-
-![GitHub](https://img.shields.io/badge/GitHub-Repository-black?logo=github)
-![VS Code](https://img.shields.io/badge/IDE-VS%20Code-blue?logo=visual-studio-code)
-![Postman](https://img.shields.io/badge/Testing-Postman-orange?logo=postman)
-
-
 # 📚 ECIEXPRESS — Sistema de Transacciones
 
 > <b>Optimización y trazabilidad de solicitudes académicas en la Escuela Colombiana de Ingeniería Julio Garavito</b>
