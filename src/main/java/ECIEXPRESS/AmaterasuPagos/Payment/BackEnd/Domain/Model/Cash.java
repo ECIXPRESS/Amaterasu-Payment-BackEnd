@@ -1,4 +1,8 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model;
 
-public class Cash {
+public class Cash extends PaymentMethod{
+    @Override
+    public PaymentMethod CreatePaymentMethod() {
+        return null;
+    }
 }
