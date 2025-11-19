@@ -2,3 +2,4 @@ package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.PaymentRequest
 
 public record CreatePaymentRequest() {
 }
+
