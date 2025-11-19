@@ -1,10 +1,10 @@
-package ECIEXPRESS.Amaterasu_Pagos.Transaction._BackEnd.Amaterasu_Pagos.Transaction._BackEnd;
+package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ApplicationTests {
+class ApplicationPaymentTests {
 
 	@Test
 	void contextLoads() {
