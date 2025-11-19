@@ -1,7 +1,7 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums;
 
 public enum BankPaymentType {
-    DEBITCARD,
-    CREDITCARD,
+    DEBIT_CARD,
+    CREDIT_CARD,
     APP
 }
