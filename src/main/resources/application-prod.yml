@@ -1,0 +1,11 @@
+microservices:
+  receipt:
+    url: http://receipt-service.prod.eciexpress.com
+  promotion:
+    url: http://promotion-service.prod.eciexpress.com
+  wallet:
+    url: http://wallet-service.prod.eciexpress.com
+  bank-gateway:
+    url: https://api.production.bank-gateway.com
+    auth:
+      api-key: ${BANK_GATEWAY_PROD_API_KEY}

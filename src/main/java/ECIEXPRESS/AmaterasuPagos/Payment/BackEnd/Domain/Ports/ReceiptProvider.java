@@ -1,4 +1,4 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports;
 
-public class ReceiptProvider {
+public interface ReceiptProvider {
 }

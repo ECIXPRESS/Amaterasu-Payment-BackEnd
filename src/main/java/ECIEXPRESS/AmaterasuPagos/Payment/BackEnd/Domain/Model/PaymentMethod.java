@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 public abstract class PaymentMethod {
     private PaymentMethodType paymentMethodType;
 
-    public abstract PaymentMethod CreatePaymentMethod();
+    public abstract PaymentMethod createPaymentMethod();
 }

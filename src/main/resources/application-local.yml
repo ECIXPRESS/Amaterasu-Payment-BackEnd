@@ -1,0 +1,11 @@
+microservices:
+  receipt:
+    url: http://localhost:8081
+  promotion:
+    url: http://localhost:8082
+  wallet:
+    url: http://localhost:8083
+  bank-gateway:
+    url: http://localhost:8084  # Mock local
+    auth:
+      api-key: "mock-api-key-local"
