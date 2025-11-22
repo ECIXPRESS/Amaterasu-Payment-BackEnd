@@ -13,7 +13,7 @@
 	<groupId>ECIEXPRESS.Amaterasu-Pagos.Payment-BackEnd</groupId>
 	<artifactId>Amaterasu-Pagos-Payment-BackEnd</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Amaterasu-Pagos-Transaction-BackEnd</name>
+	<name>Amaterasu-Pagos-Payment-BackEnd</name>
 	<description>Repository for the final project</description>
 	<url/>
 	<licenses>
@@ -87,16 +87,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <!-- Spring Boot MongoDB -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
 
         <!-- Spring Boot Validation -->

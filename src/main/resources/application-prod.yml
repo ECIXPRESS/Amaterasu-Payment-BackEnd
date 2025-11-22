@@ -5,7 +5,6 @@ microservices:
     url: http://promotion-service.prod.eciexpress.com
   wallet:
     url: http://wallet-service.prod.eciexpress.com
-  bank-gateway:
-    url: https://api.production.bank-gateway.com
-    auth:
-      api-key: ${BANK_GATEWAY_PROD_API_KEY}
+  base-url: https://sandbox.api.payulatam.com/payments-api/4.0/service.cgi
+  api-login: pRRXKOl8ikMmt9u
+  api-key: 4Vj8eK4rloUd272L48hsrarnUA
