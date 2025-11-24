@@ -5,12 +5,12 @@ on:
     branches:
       - develop
       - main
-      - 'feature/**'
+      - 'Feature/**'
   pull_request:
     branches:
       - develop
       - main
-      - 'feature/**'
+      - 'Feature/**'
 
 jobs:
   test-and-quality:
@@ -52,3 +52,5 @@ jobs:
           name: jacoco-report
           path: target/site/jacoco/
           if-no-files-found: ignore
+
+          #
