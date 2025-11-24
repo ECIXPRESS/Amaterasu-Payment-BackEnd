@@ -1,0 +1,99 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: payment-service
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+# Configuración COMPLETA de Swagger/OpenAPI
+springdoc:
+  api-docs:
+    path: /api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operations-sorter: alpha
+    tags-sorter: alpha
+    doc-expansion: none
+    display-request-duration: true
+    filter: true
+  show-actuator: false
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  cache:
+    disabled: true
+  info:
+    title: Payment Service API
+    version: 1.0.0
+    description: API para gestión de pagos en ECIEXPRESS
+
+# Configuración de Microservicios Externos
+microservices:
+  receipt:
+    url: http://localhost:8081
+    base-path: /api/v1/receipts
+    timeout: 5000
+    retry:
+      max-attempts: 3
+      backoff-delay: 1000
+  promotion:
+    url: http://localhost:8083
+    base-path: /api/v1/promotions
+    timeout: 3000
+    retry:
+      max-attempts: 2
+      backoff-delay: 500
+  wallet:
+    url: http://localhost:8082
+    base-path: /api/v1/wallet
+    timeout: 4000
+    retry:
+      max-attempts: 3
+      backoff-delay: 750
+  bank-gateway:
+    payu:
+      base-url: https://sandbox.api.payulatam.com/payments-api/4.0/service.cgi
+      api-login: pRRXKOl8ikMmt9u
+      api-key: 4Vj8eK4rloUd272L48hsrarnUA
+      merchant-id: 508029
+      account-id: 512321
+      currency: COP
+      test-mode: true
+      timeout: 30000
+
+# Configuración de Resilience4j para Circuit Breaker
+resilience4j:
+  circuitbreaker:
+    instances:
+      receiptService:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10000
+        permitted-number-of-calls-in-half-open-state: 3
+      promotionService:
+        sliding-window-size: 10
+        failure-rate-threshold: 60
+        wait-duration-in-open-state: 15000
+      walletService:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10000
+  retry:
+    instances:
+      receiptService:
+        max-attempts: 3
+        wait-duration: 2s
+      promotionService:
+        max-attempts: 2
+        wait-duration: 1s
+
+logging:
+  level:
+    com.tucompany.users: DEBUG
+    org.springframework.data.mongodb: INFO
+    ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients: DEBUG
+    org.springdoc: DEBUG
