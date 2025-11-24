@@ -1,9 +1,15 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model;
 
-public class Cash extends PaymentMethod{
-    @Override
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentMethodType;
+import lombok.Data;
+
+@Data
+public class Cash implements PaymentMethod {
+    private PaymentMethodType paymentMethodType;
+
     public PaymentMethod createPaymentMethod() {
-        return null;
+        Cash cash = new Cash();
+        cash.setPaymentMethodType(PaymentMethodType.CASH);
+        return cash;
     }
-    //TODO: implementar
 }

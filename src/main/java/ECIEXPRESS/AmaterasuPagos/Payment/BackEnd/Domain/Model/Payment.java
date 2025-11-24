@@ -1,6 +1,6 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model;
 
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.StrategyContext;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.Context;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +21,6 @@ public abstract class Payment {
     private PaymentStatus paymentStatus;
     private TimeStamps timeStamps;
     private List<String> appliedPromotions;
-    public abstract Payment createPayment(StrategyContext strategyContext);
+    public abstract Payment createPayment(Context context);
 
 }

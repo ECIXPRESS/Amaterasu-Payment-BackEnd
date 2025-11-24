@@ -46,7 +46,7 @@ public class PromotionProviderAdapter implements PromotionProvider {
 
         } catch (Exception e) {
             log.error("Error applying promotions for order {} Error: {}",orderId, e.getMessage());
-            return new PromotionResponse(null,null);
+            return new PromotionResponse(0,null);
         }
     }
     private HttpHeaders createHeaders() {

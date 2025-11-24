@@ -11,7 +11,7 @@ public class MicroservicesConfig {
     private ServiceConfig receipt;
     private ServiceConfig promotion;
     private ServiceConfig wallet;
-    private ServiceConfig bankGateway;
+    private PayuConfig payu;
 
     @Data
     public static class ServiceConfig {
@@ -23,14 +23,16 @@ public class MicroservicesConfig {
     }
 
     @Data
-    public static class BankGatewayConfig {
-        private String url;
-        private String basePath;
+    public static class PayuConfig {
+        private String baseUrl;
+        private String apiLogin;
+        private String apiKey;
+        private String merchantId;
+        private String accountId;
+        private String currency;
+        private boolean testMode;
         private int timeout;
-        private RetryConfig retry;
-        private AuthConfig auth;
     }
-
 
     @Data
     public static class RetryConfig {

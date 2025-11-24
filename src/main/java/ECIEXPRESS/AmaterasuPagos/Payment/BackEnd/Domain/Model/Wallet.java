@@ -1,10 +1,15 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model;
 
-public class Wallet extends PaymentMethod{
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentMethodType;
+import lombok.Data;
 
-    @Override
+@Data
+public class Wallet implements PaymentMethod {
+    private PaymentMethodType paymentMethodType;
+
     public PaymentMethod createPaymentMethod() {
-        return null;
+        Wallet wallet = new Wallet();
+        wallet.setPaymentMethodType(PaymentMethodType.WALLET);
+        return wallet;
     }
-    //TODO: implementar
 }

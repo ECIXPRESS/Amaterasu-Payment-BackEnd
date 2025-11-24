@@ -171,11 +171,6 @@ public class BankValidationResult {
     private void validatePaymentTypeSpecificRules(BankDetails bankDetails) {
         switch (bankDetails.getBankPaymentType()) {
             case CREDIT_CARD:
-                if (bankDetails.getAccountNumber() != null &&
-                        bankDetails.getAccountNumber().startsWith("4")) {
-                    addWarning("Visa card detected",
-                            "Additional fees may apply for Visa cards", ErrorSeverity.LOW);
-                }
                 break;
 
             case DEBIT_CARD:
@@ -199,20 +194,40 @@ public class BankValidationResult {
     }
 
     private boolean isValidLuhn(String number) {
+        if (number == null || number.trim().isEmpty()) {
+            return false;
+        }
+
         try {
+            // Eliminar espacios y verificar que solo hay dígitos
+            String cleanNumber = number.replaceAll("\\s+", "");
+            if (!cleanNumber.matches("\\d+")) {
+                return false;
+            }
+
+            // Si es todo ceros, es inválido
+            if (cleanNumber.matches("^0+$")) {
+                return false;
+            }
+
             int sum = 0;
             boolean alternate = false;
-            for (int i = number.length() - 1; i >= 0; i--) {
-                int n = Integer.parseInt(number.substring(i, i + 1));
+
+            // Recorrer de derecha a izquierda
+            for (int i = cleanNumber.length() - 1; i >= 0; i--) {
+                int digit = Character.getNumericValue(cleanNumber.charAt(i));
+
                 if (alternate) {
-                    n *= 2;
-                    if (n > 9) {
-                        n = (n % 10) + 1;
+                    digit *= 2;
+                    if (digit > 9) {
+                        digit = digit - 9;
                     }
                 }
-                sum += n;
+
+                sum += digit;
                 alternate = !alternate;
             }
+
             return (sum % 10 == 0);
         } catch (Exception e) {
             return false;

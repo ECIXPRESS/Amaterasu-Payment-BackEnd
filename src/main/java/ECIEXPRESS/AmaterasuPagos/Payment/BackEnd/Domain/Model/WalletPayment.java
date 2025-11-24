@@ -1,18 +1,25 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model;
 
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.StrategyContext;
-import lombok.AllArgsConstructor;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.Context;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
-@NoArgsConstructor
 public class WalletPayment extends Payment {
 
-    public Payment createPayment(StrategyContext strategyContext){
-        return null;
+    @Override
+    public Payment createPayment(Context context) {
+        WalletPayment walletPayment = new WalletPayment();
+        walletPayment.setOrderId(context.paymentDto().orderId());
+        walletPayment.setClientId(context.paymentDto().clientId());
+        walletPayment.setStoreId(context.paymentDto().storeId());
+        walletPayment.setOriginalAmount(context.paymentDto().originalAmount());
+        walletPayment.setFinalAmount(context.paymentDto().finalAmount());
+        walletPayment.setPaymentMethod(context.paymentDto().paymentMethod());
+        walletPayment.setPaymentStatus(context.paymentDto().paymentStatus());
+        walletPayment.setTimeStamps(context.paymentDto().timeStamps());
+        walletPayment.setAppliedPromotions(context.paymentDto().appliedPromotions());
+        return walletPayment;
     }
 }

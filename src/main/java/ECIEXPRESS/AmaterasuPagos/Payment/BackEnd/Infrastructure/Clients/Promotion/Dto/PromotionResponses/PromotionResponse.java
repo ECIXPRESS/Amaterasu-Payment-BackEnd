@@ -3,6 +3,6 @@ package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promoti
 import java.util.List;
 
 public record PromotionResponse(
-        Integer finalAmount,
+        double finalAmount,
         List<String> appliedPromotions) {
 }
