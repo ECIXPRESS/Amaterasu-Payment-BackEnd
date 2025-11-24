@@ -12,5 +12,4 @@ public class Cash implements PaymentMethod {
         cash.setPaymentMethodType(PaymentMethodType.CASH);
         return cash;
     }
-    //TODO: implementar
 }

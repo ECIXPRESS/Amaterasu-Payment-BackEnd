@@ -17,5 +17,4 @@ public class Bank implements PaymentMethod {
         bank.setPaymentMethodType(PaymentMethodType.BANK);
         return bank;
     }
-    //TODO: implementar
 }
