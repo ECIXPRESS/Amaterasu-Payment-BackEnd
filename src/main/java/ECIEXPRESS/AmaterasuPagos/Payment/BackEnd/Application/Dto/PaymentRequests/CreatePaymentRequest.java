@@ -11,6 +11,5 @@ public record CreatePaymentRequest(
         PaymentMethod paymentMethod,
         BankDetails bankDetails
         ) {
-
 }
 

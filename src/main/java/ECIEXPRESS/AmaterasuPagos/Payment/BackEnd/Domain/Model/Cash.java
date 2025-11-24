@@ -5,4 +5,5 @@ public class Cash extends PaymentMethod{
     public PaymentMethod createPaymentMethod() {
         return null;
     }
+    //TODO: implementar
 }
