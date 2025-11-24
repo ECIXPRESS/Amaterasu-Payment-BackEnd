@@ -13,12 +13,10 @@ import java.util.Date;
 public class GatewayResponse {
     private boolean isSuccess;
     private String bankReceiptNumber;
-    private String authorizationnNumber;
+    private String authorizationNumber;
     private String gatewayMessage;
     private String ResponseCode;
     private BankResponseCode bankResponseCode;
-    private Date timeStamp;
     private double processedAmount;
     private String currency;
-
 }

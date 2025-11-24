@@ -6,11 +6,10 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.BankDetails;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.BankValidationResult;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Exception.BankValidationException;
 import com.sun.jdi.event.ExceptionEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ValidationService implements ValidationUseCases{
-    private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
     @Override
     public BankValidationResult createValidation(BankDetails bankDetails) {
@@ -18,14 +17,14 @@ public class ValidationService implements ValidationUseCases{
             BankValidationResult bankValidationResult = new BankValidationResult();
             bankValidationResult.createValidation(bankDetails);
 
-            logger.info("Bank validation completed successfully. Valid: {}, Risk Score: {}",
+            log.info("BankPayment validation completed successfully. Valid: {}, Risk Score: {}",
                     bankValidationResult.isValid(),
                     bankValidationResult.getRiskScore());
 
             return bankValidationResult;
 
         } catch (BankValidationException e) {
-            logger.warn("Bank validation failed: {}", e.getMessage());
+            log.warn("BankPayment validation failed: {}", e.getMessage());
             throw e;
         }
     }

@@ -36,7 +36,7 @@ public class BankValidationResult {
             throw new BankValidationException(
                     this,
                     String.format(
-                            "Bank validation failed for account ending in %s. Risk score: %.2f, Errors: %d",
+                            "BankPayment validation failed for account ending in %s. Risk score: %.2f, Errors: %d",
                             bankDetails.getAccountNumber() != null && bankDetails.getAccountNumber().length() > 4 ?
                                     "***" + bankDetails.getAccountNumber().substring(bankDetails.getAccountNumber().length() - 4) : "N/A",
                             this.riskScore,
@@ -48,7 +48,7 @@ public class BankValidationResult {
 
     private void validateBankDetails(BankDetails bankDetails) {
         if (bankDetails.getBankName() == null || bankDetails.getBankName().trim().isEmpty()) {
-            addError("Bank name is required", "Please provide a valid bank name", ErrorSeverity.HIGH);
+            addError("BankPayment name is required", "Please provide a valid bank name", ErrorSeverity.HIGH);
             riskScore += 20;
         }
 
@@ -185,7 +185,7 @@ public class BankValidationResult {
 
             case PSE:
                 if (bankDetails.getBankName() == null) {
-                    addError("Bank name is required for PSE payments",
+                    addError("BankPayment name is required for PSE payments",
                             "Please select a bank", ErrorSeverity.HIGH);
                     riskScore += 20;
                 }

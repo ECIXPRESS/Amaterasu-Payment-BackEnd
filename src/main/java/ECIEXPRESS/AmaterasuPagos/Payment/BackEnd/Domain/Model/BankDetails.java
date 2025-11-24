@@ -19,5 +19,4 @@ public class BankDetails {
     private String cvv;
     private String cardHolderName;
     private ValidationStatus validationStatus;
-
 }

@@ -41,14 +41,14 @@ microservices:
       max-attempts: 3
       backoff-delay: 1000
   promotion:
-    url: http://localhost:8082
+    url: http://localhost:8083
     base-path: /api/v1/promotions
     timeout: 3000
     retry:
       max-attempts: 2
       backoff-delay: 500
   wallet:
-    url: http://localhost:8083
+    url: http://localhost:8082
     base-path: /api/v1/wallet
     timeout: 4000
     retry:

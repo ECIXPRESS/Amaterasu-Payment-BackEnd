@@ -8,5 +8,7 @@ public enum BankResponseCode {
     INVALID_CVV,
     SUSPECTED_FRAUD,
     BANK_UNAVAILABLE,
-    TIMEOUT
+    TIMEOUT,
+    PENDING,
+    ERROR
 }

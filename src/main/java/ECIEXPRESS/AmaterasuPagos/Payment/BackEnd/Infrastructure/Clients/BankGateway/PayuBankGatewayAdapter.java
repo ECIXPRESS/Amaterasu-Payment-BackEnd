@@ -1,11 +1,12 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.BankGateway;
 
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.PaymentRequests.CreatePaymentRequest;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.BankDetails;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.GatewayResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.BankResponseCode;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.BankGatewayProvider;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.BankGateway.Dto.PayuPaymentRequest;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.BankGateway.Dto.PayuPaymentResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.BankGateway.Dto.BankGatewayRequests.PayuPaymentRequest;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.BankGateway.Dto.BankGatewayResponses.PayuPaymentResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,7 +49,7 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
     @Override
     public GatewayResponse processPayment(CreatePaymentRequest createPaymentRequest) {
         try {
-            log.info("🔄 Processing payment with PayU Colombia for order: {}", createPaymentRequest.orderId());
+            log.info("Processing payment with PayU Colombia for order: {}", createPaymentRequest.orderId());
 
             PayuPaymentRequest payuRequest = buildPayuRequest(createPaymentRequest);
 
@@ -71,24 +72,6 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
             log.error("Error processing payment with PayU for order {}: {}",
                     createPaymentRequest.orderId(), e.getMessage());
             return createErrorResponse("PAYU_PROCESSING_ERROR", e.getMessage());
-        }
-    }
-
-    @Override
-    public GatewayResponse checkPaymentStatus(String transactionId) {
-        return null;
-    }
-
-    @Override
-    public boolean validateApiConnection() {
-        try {
-            HttpHeaders headers = createHeaders();
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-
-            return true;
-        } catch (Exception e) {
-            log.warn("PayU API connection validation failed: {}", e.getMessage());
-            return false;
         }
     }
 
@@ -198,17 +181,16 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
     }
 
     private String generateSignature(CreatePaymentRequest request) {
-        String signatureString = String.format("%s~%s~%s~%.0f~%s",
+        return String.format("%s~%s~%s~%.0f~%s",
                 apiKey, merchantId, request.orderId(), request.originalAmount(), currency);
-
-        return "test-signature";
+        //return "test-signature";
     }
 
     private GatewayResponse mapToGatewayResponse(PayuPaymentResponse payuResponse, double amount) {
         GatewayResponse response = new GatewayResponse();
 
         if (payuResponse != null && payuResponse.getTransactionResponse() != null) {
-            PayuPaymentResponse.TransactionResponse tx = payuResponse.getTransactionResponse();
+            PayuPaymentResponse.PayuTransactionResponse tx = payuResponse.getTransactionResponse();
 
             response.setSuccess("APPROVED".equals(tx.getState()));
             response.setBankReceiptNumber(tx.getTransactionId());
@@ -224,8 +206,6 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
             response.setResponseCode("500");
             response.setBankResponseCode(BankResponseCode.BANK_UNAVAILABLE);
         }
-
-        response.setTimeStamp(new Date());
         return response;
     }
 
@@ -252,7 +232,6 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
         response.setGatewayMessage(errorMessage);
         response.setResponseCode(errorCode);
         response.setBankResponseCode(BankResponseCode.BANK_UNAVAILABLE);
-        response.setTimeStamp(new Date());
         return response;
     }
 

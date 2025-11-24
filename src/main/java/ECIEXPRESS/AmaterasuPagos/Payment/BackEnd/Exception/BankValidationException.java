@@ -9,7 +9,7 @@ public class BankValidationException extends RuntimeException {
     private final String errorCode;
 
     public BankValidationException(BankValidationResult validationResult) {
-        super("Bank validation failed with risk score: " + validationResult.getRiskScore());
+        super("BankPayment validation failed with risk score: " + validationResult.getRiskScore());
         this.validationResult = validationResult;
         this.errorCode = "BANK_VALIDATION_FAILED";
     }
