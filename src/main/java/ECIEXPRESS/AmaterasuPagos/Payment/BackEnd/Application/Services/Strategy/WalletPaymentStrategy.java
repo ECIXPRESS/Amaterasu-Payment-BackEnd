@@ -1,6 +1,7 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.Strategy;
 
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.PaymentDto;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Mappers.ApplicationMapper;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.Context;
@@ -22,7 +23,7 @@ import java.util.Date;
 import static ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Mappers.ApplicationMapper.*;
 
 @AllArgsConstructor
-@NoArgsConstructor
+ @NoArgsConstructor
 @Service
 public class WalletPaymentStrategy implements PaymentStrategy{
     private PromotionProvider promotionProvider;
@@ -31,8 +32,6 @@ public class WalletPaymentStrategy implements PaymentStrategy{
     @Override
     public CreatePaymentResponse createPayment(CreatePaymentRequest createPaymentRequest){
         Payment payment = new WalletPayment();
-        CreatePaymentResponse createPaymentResponse;
-        CreateReceiptResponse receiptResponse;
         TimeStamps timeStamps = new TimeStamps();
         timeStamps.setCreatedAt(new Date().toString());
         PromotionResponse promotionResponse = promotionProvider.applyPromotions(createPaymentRequest.orderId());
@@ -41,8 +40,7 @@ public class WalletPaymentStrategy implements PaymentStrategy{
         timeStamps.setPaymentProcessedAt(new Date().toString());
         PaymentDto paymentDto = createBankPaymentDto(createPaymentRequest, promotionResponse, timeStamps);
         payment = payment.createPayment(new Context(paymentDto, null, null));
-        receiptResponse = receiptProvider.createReceipt(payment);
-        createPaymentResponse = ReceiptResponseToPaymentResponse(receiptResponse);
-        return createPaymentResponse;
+        CreateReceiptResponse receiptResponse = receiptProvider.createReceipt(payment);
+        return ApplicationMapper.receiptResponseToPaymentResponse(receiptResponse);
     }
 }

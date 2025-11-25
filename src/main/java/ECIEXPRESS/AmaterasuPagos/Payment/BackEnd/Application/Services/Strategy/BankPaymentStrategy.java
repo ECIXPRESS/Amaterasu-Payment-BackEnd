@@ -1,6 +1,7 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.Strategy;
 
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.PaymentDto;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Mappers.ApplicationMapper;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.Context;
@@ -30,8 +31,6 @@ public class BankPaymentStrategy implements PaymentStrategy{
     @Override
     public CreatePaymentResponse createPayment(CreatePaymentRequest createPaymentRequest){
         Payment payment = new BankPayment();
-        CreatePaymentResponse createPaymentResponse;
-        CreateReceiptResponse receiptResponse;
         TimeStamps timeStamps = new TimeStamps();
         timeStamps.setCreatedAt(new Date().toString());
         BankValidationResult bankValidationResult = validationService.createValidation(createPaymentRequest.bankDetails());
@@ -41,8 +40,7 @@ public class BankPaymentStrategy implements PaymentStrategy{
         timeStamps.setPaymentProcessedAt(new Date().toString());
         PaymentDto paymentDto = createBankPaymentDto(createPaymentRequest, promotionResponse, timeStamps);
         payment = payment.createPayment(new Context(paymentDto, gatewayResponse, bankValidationResult));
-        receiptResponse = receiptProvider.createReceipt(payment);
-        createPaymentResponse = ReceiptResponseToPaymentResponse(receiptResponse);
-        return createPaymentResponse;
+        CreateReceiptResponse receiptResponse = receiptProvider.createReceipt(payment);
+        return ApplicationMapper.receiptResponseToPaymentResponse(receiptResponse);
     }
 }

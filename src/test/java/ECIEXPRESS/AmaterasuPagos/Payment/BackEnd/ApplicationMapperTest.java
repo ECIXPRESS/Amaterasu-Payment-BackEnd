@@ -1,15 +1,12 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd;
 
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.PaymentDto;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.*;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Mappers.ApplicationMapper;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.BankDetails;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Cash;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.BankAccountType;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.BankPaymentType;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentMethodType;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentStatus;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.PaymentMethod;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.TimeStamps;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.PromotionResponse;
@@ -119,11 +116,11 @@ class ApplicationMapperTest {
     void receiptResponseToPaymentResponse_ShouldMapAllFields() {
         // Given
         CreateReceiptResponse receiptResponse = new CreateReceiptResponse(
-                "RECEIPT-123", "ORDER-123", "STORE-789", 95000.0, PaymentStatus.COMPLETED
+                "RECEIPT-123", "ORDER-123", "STORE-789", 95000.0, ReceiptStatus.PAYED
         );
 
         // When
-        CreatePaymentResponse result = ApplicationMapper.ReceiptResponseToPaymentResponse(receiptResponse);
+        CreatePaymentResponse result = ApplicationMapper.receiptResponseToPaymentResponse(receiptResponse);
 
         // Then
         assertNotNull(result);
@@ -131,7 +128,7 @@ class ApplicationMapperTest {
         assertEquals("ORDER-123", result.orderId());
         assertEquals("STORE-789", result.storeId());
         assertEquals(95000.0, result.finalAmount());
-        assertEquals(PaymentStatus.COMPLETED, result.paymentStatus());
+        assertEquals(ReceiptStatus.PAYED, result.receiptStatus());
     }
 
     @Test

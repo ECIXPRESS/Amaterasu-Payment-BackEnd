@@ -1,6 +1,7 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.Strategy;
 
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.PaymentDto;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Mappers.ApplicationMapper;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.Context;
@@ -28,16 +29,13 @@ public class CashPaymentStrategy implements PaymentStrategy{
     @Override
     public CreatePaymentResponse createPayment(CreatePaymentRequest createPaymentRequest){
         Payment payment = new CashPayment();
-        CreatePaymentResponse createPaymentResponse;
-        CreateReceiptResponse receiptResponse;
         TimeStamps timeStamps = new TimeStamps();
         timeStamps.setCreatedAt(new Date().toString());
         PromotionResponse promotionResponse = promotionProvider.applyPromotions(createPaymentRequest.orderId());
         createPaymentRequest = updatePaymentRequest(createPaymentRequest, promotionResponse);
         PaymentDto paymentDto = createCashPaymentDto(createPaymentRequest, promotionResponse, timeStamps);
         payment = payment.createPayment(new Context(paymentDto, null, null));
-        receiptResponse = receiptProvider.createReceipt(payment);
-        createPaymentResponse = ReceiptResponseToPaymentResponse(receiptResponse);
-        return createPaymentResponse;
+        CreateReceiptResponse receiptResponse = receiptProvider.createReceipt(payment);
+        return ApplicationMapper.receiptResponseToPaymentResponse(receiptResponse);
     }
 }

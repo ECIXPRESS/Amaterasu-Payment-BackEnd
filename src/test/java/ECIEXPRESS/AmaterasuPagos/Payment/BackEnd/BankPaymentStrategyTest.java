@@ -1,15 +1,11 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd;
 
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.*;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.Strategy.BankPaymentStrategy;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.ValidationService;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.*;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.BankAccountType;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.BankPaymentType;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.BankResponseCode;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentMethodType;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentStatus;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.BankGatewayProvider;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.PromotionProvider;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.ReceiptProvider;
@@ -71,7 +67,7 @@ class BankPaymentStrategyTest {
                 true, "BRN-123", "AUTH-456", "APPROVED", "APPROVED", BankResponseCode.APPROVED, 90000.0, "COP");
         when(bankGatewayProvider.processPayment(any(CreatePaymentRequest.class))).thenReturn(gatewayResponse);
 
-        var receipt = new CreateReceiptResponse("R-3", "ORDER-3", "STORE-3", 90000.0, PaymentStatus.COMPLETED);
+        var receipt = new CreateReceiptResponse("R-3", "ORDER-3", "STORE-3", 90000.0, ReceiptStatus.PAYED);
         when(receiptProvider.createReceipt(any(Payment.class))).thenReturn(receipt);
 
         CreatePaymentResponse response = strategy.createPayment(request);
@@ -81,7 +77,7 @@ class BankPaymentStrategyTest {
         assertEquals("ORDER-3", response.orderId());
         assertEquals("STORE-3", response.storeId());
         assertEquals(90000.0, response.finalAmount());
-        assertEquals(PaymentStatus.COMPLETED, response.paymentStatus());
+        assertEquals(ReceiptStatus.PAYED, response.receiptStatus());
 
         ArgumentCaptor<CreatePaymentRequest> reqCaptor = ArgumentCaptor.forClass(CreatePaymentRequest.class);
         verify(bankGatewayProvider, times(1)).processPayment(reqCaptor.capture());
