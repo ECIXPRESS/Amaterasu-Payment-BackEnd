@@ -1,11 +1,9 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services;
 
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.PaymentRequests.CreatePaymentRequest;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Ports.ValidationUseCases;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.BankDetails;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.BankValidationResult;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Exception.BankValidationException;
-import com.sun.jdi.event.ExceptionEvent;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

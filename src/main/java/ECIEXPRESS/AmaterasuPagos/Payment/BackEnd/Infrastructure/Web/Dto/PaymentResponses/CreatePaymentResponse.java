@@ -1,4 +1,4 @@
-package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.PaymentResponses;
+package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses;
 
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentStatus;
 

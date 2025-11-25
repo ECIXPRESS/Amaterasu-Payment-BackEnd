@@ -1,7 +1,7 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd;
 
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.PaymentRequests.CreatePaymentRequest;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.PaymentResponses.CreatePaymentResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.Strategy.WalletPaymentStrategy;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Payment;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Wallet;
