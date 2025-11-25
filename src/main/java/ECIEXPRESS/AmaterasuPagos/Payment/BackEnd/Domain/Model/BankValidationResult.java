@@ -199,11 +199,13 @@ public class BankValidationResult {
         }
 
         try {
+            // Eliminar espacios y verificar que solo hay dígitos
             String cleanNumber = number.replaceAll("\\s+", "");
             if (!cleanNumber.matches("\\d+")) {
                 return false;
             }
 
+            // Si es todo ceros, es inválido
             if (cleanNumber.matches("^0+$")) {
                 return false;
             }
@@ -211,6 +213,7 @@ public class BankValidationResult {
             int sum = 0;
             boolean alternate = false;
 
+            // Recorrer de derecha a izquierda
             for (int i = cleanNumber.length() - 1; i >= 0; i--) {
                 int digit = Character.getNumericValue(cleanNumber.charAt(i));
 

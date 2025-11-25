@@ -1,8 +1,10 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Receipt;
 
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentMethodType;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.BankResponseCode;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Payment;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.ReceiptProvider;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionRequests.PromotionRequest;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.PromotionResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Receipt.Dto.ReceiptRequests.CreateReceiptRequest;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Receipt.Dto.ReceiptResponses.CreateReceiptResponse;
 import lombok.RequiredArgsConstructor;
@@ -49,34 +51,16 @@ public class ReceiptProviderAdapter implements ReceiptProvider {
     }
 
     private CreateReceiptRequest mapToReceiptRequest(Payment payment) {
-        if (payment.getPaymentMethod().getPaymentMethodType() == PaymentMethodType.BANK){
-            return new CreateReceiptRequest(
-                    payment.getOrderId(),
-                    payment.getClientId(),
-                    payment.getStoreId(),
-                    payment.getPaymentMethod().getBankReceiptNumber(),
-                    payment.getPaymentMethod().getBankName(),
-                    payment.getOriginalAmount(),
-                    payment.getFinalAmount(),
-                    payment.getPaymentMethod(),
-                    payment.getPaymentStatus(),
-                    payment.getTimeStamps(),
-                    payment.getAppliedPromotions());
-        }
-        else{
-            return new CreateReceiptRequest(
-                    payment.getOrderId(),
-                    payment.getClientId(),
-                    payment.getStoreId(),
-                    payment.getPaymentMethod().getBankReceiptNumber(),
-                    payment.getPaymentMethod().getBankName(),
-                    payment.getOriginalAmount(),
-                    payment.getFinalAmount(),
-                    payment.getPaymentMethod(),
-                    payment.getPaymentStatus(),
-                    payment.getTimeStamps(),
-                    payment.getAppliedPromotions());
-        }
+
+        return new CreateReceiptRequest(
+                payment.getOrderId(),
+                payment.getClientId(),
+                payment.getStoreId(),
+                payment.getFinalAmount(),
+                payment.getPaymentMethod(),
+                payment.getPaymentStatus(),
+                payment.getTimeStamps(),
+                payment.getAppliedPromotions());
     }
 
     private HttpHeaders createHeaders() {
