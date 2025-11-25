@@ -4,9 +4,11 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.BankAccountT
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.BankPaymentType;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentMethodType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class Bank implements PaymentMethod {
+@EqualsAndHashCode(callSuper = false)
+public class Bank extends PaymentMethod {
     private PaymentMethodType paymentMethodType;
     private BankPaymentType bankPaymentType;
     private BankAccountType bankAccountType;
