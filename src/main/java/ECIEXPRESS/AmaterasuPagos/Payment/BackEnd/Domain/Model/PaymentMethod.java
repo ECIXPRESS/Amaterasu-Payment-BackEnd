@@ -21,4 +21,12 @@ public abstract class PaymentMethod {
 
     public abstract PaymentMethod createPaymentMethod();
 
+    public String getBankReceiptNumber() {
+        return null;
+    }
+
+    public String getBankName() {
+        return null;
+    }
+
 }
