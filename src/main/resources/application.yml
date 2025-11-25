@@ -1,9 +1,9 @@
 server:
-  port: 8080
+  port: 8085
 
 spring:
   application:
-    name: payment-service
+    name: payments-service
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -90,6 +90,23 @@ resilience4j:
       promotionService:
         max-attempts: 2
         wait-duration: 1s
+
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: 0
+      timeout: 5000ms
+      connect-timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+          max-wait: 1000ms
+
 
 logging:
   level:
