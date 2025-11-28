@@ -1,0 +1,16 @@
+microservices:
+  receipt:
+    url: http://localhost:8081
+  promotion:
+    url: http://localhost:8083
+  wallet:
+    url: http://localhost:8082
+  bank-gateway:
+    payu:
+      base-url: https://sandbox.api.payulatam.com/payments-api/4.0/service.cgi
+      api-login: pRRXKOl8ikMmt9u
+      api-key: 4Vj8eK4rloUd272L48hsrarnUA
+      merchant-id: 508029
+      account-id: 512321
+      currency: COP
+      test-mode: true
