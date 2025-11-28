@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - develop
-      # - Feature/devops   
+      - Feature/devops   
 
 jobs:
   build-and-deploy:
