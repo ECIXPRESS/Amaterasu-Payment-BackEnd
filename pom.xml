@@ -65,9 +65,10 @@
         <mockwebserver.version>4.12.0</mockwebserver.version>
         <bytebuddy.version>1.15.8</bytebuddy.version>
 
-        <sonar.projectKey>SIRHA</sonar.projectKey>
-        <sonar.projectName>SIRHA</sonar.projectName>
-        <sonar.host.url>http://localhost:9000</sonar.host.url>
+        <sonar.organization>ecixpress</sonar.organization>
+        <sonar.projectKey>ECIXPRESS_Amaterasu-Payment-BackEnd</sonar.projectKey>
+        <sonar.projectName>ECIXPRESS_Amaterasu-Payment-BackEnd</sonar.projectName>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.coverage.exclusions>
             src/**/config/**,
