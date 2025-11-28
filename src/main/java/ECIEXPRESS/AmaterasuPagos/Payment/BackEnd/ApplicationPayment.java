@@ -2,12 +2,14 @@ package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
 public class ApplicationPayment {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ApplicationPayment.class, args);
-	}
+    private static ConfigurableApplicationContext context;
 
+    public static void main(String[] args) {
+        context = SpringApplication.run(ApplicationPayment.class, args);
+    }
 }

@@ -4,6 +4,7 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Cash;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.CashPayment;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentMethodType;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentStatus;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.ReceiptStatus;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.TimeStamps;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Receipt.ReceiptProviderAdapter;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Receipt.Dto.ReceiptResponses.CreateReceiptResponse;
@@ -60,7 +61,7 @@ class ReceiptProviderAdapterTest {
           "orderId":"ORDER-300",
           "storeId":"STORE-789",
           "finalAmount":95000.0,
-          "paymentStatus":"COMPLETED"
+          "receiptStatus":"PAYED"
         }
         """;
 
@@ -76,7 +77,7 @@ class ReceiptProviderAdapterTest {
         assertEquals("ORDER-300", response.orderId());
         assertEquals("STORE-789", response.storeId());
         assertEquals(95000.0, response.finalAmount());
-        assertEquals(PaymentStatus.COMPLETED, response.paymentStatus());
+        assertEquals(ReceiptStatus.PAYED, response.receiptStatus());
     }
 
     @Test
@@ -103,7 +104,7 @@ class ReceiptProviderAdapterTest {
         assertNull(response.orderId());
         assertNull(response.storeId());
         assertEquals(0.0, response.finalAmount());
-        assertNull(response.paymentStatus());
+        assertNull(response.receiptStatus());
     }
 
     private void setField(Object target, String fieldName, Object value) {

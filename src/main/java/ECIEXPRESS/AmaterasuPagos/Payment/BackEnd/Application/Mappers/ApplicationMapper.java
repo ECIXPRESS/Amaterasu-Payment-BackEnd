@@ -45,12 +45,12 @@ public class ApplicationMapper {
                 createPaymentRequest.bankDetails());
     }
 
-    public static CreatePaymentResponse ReceiptResponseToPaymentResponse(CreateReceiptResponse receiptResponse){
+    public static CreatePaymentResponse receiptResponseToPaymentResponse(CreateReceiptResponse receiptResponse){
         return new CreatePaymentResponse(
                 receiptResponse.receiptId(),
                 receiptResponse.orderId(),
                 receiptResponse.storeId(),
                 receiptResponse.finalAmount(),
-                receiptResponse.paymentStatus());
+                receiptResponse.receiptStatus());
     }
 }
