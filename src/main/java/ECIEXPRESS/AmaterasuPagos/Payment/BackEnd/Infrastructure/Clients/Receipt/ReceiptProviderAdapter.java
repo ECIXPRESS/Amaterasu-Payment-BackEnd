@@ -44,7 +44,7 @@ public class ReceiptProviderAdapter implements ReceiptProvider {
 
         } catch (Exception e) {
             log.error("Error processing receipt for order {} Error: {}",payment.getOrderId(), e.getMessage());
-            return new CreateReceiptResponse(null,null, null,0,null,null);
+            return new CreateReceiptResponse(null,null, null,null, 0,null,null);
         }
     }
 
