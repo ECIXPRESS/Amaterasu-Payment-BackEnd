@@ -70,17 +70,15 @@
         <sonar.host.url>http://localhost:9000</sonar.host.url>
         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.coverage.exclusions>
-            src/**/config/**,
-            src/**/configs/**,
-            src/**/Config/**,
-            src/**/model/**,
-            src/**/dto/**,
-            src/**/strategy/**,
-            src/**/configurators/**,
-            src/**/exception/**,
-            src/**/default/**,
-            src/**/utils/**,
-            src/**/Utils/**
+            **/Config/**,
+            **/Dto/**,
+            **/Model/**,
+            **/Entity/**,
+            **/Entities/**,
+            **/Exception/**,
+            **/*Application.java,
+            **/*ApplicationPayment.java,
+            **/Utils/**
         </sonar.coverage.exclusions>
         <jacoco.version>0.8.13</jacoco.version>
         <argLine></argLine>
@@ -217,8 +215,9 @@
                                     <element>PACKAGE</element>
                                     <limits>
                                         <limit>
-                                            <counter>CLASS</counter>
+                                            <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
+                                            <minimum>0.8</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
