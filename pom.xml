@@ -215,7 +215,7 @@
                                     <element>PACKAGE</element>
                                     <limits>
                                         <limit>
-                                            <counter>LINE</counter>
+                                            <counter>METHOD</counter>
                                             <value>COVEREDRATIO</value>
                                             <minimum>0.8</minimum>
                                         </limit>
