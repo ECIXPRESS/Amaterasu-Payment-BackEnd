@@ -1,6 +1,5 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd;
 
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.ReceiptStatus;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.Strategy.WalletPaymentStrategy;
@@ -53,7 +52,7 @@ class WalletPaymentStrategyTest {
         when(walletProvider.processPayment(any(CreatePaymentRequest.class)))
                 .thenReturn(new CreateWalletResponse(PaymentStatus.COMPLETED));
 
-        var receipt = new CreateReceiptResponse("R-2", "ORDER-2", "STORE-2", 70000.0, ReceiptStatus.PAYED);
+        var receipt = new CreateReceiptResponse("R-2", "ORDER-2", "STORE-2", 70000.0, PaymentStatus.COMPLETED, "QR-2");
         when(receiptProvider.createReceipt(any(Payment.class))).thenReturn(receipt);
 
         CreatePaymentResponse response = strategy.createPayment(request);
@@ -63,7 +62,7 @@ class WalletPaymentStrategyTest {
         assertEquals("ORDER-2", response.orderId());
         assertEquals("STORE-2", response.storeId());
         assertEquals(70000.0, response.finalAmount());
-        assertEquals(ReceiptStatus.PAYED, response.receiptStatus());
+        assertEquals(PaymentStatus.COMPLETED, response.paymentStatus());
 
         ArgumentCaptor<CreatePaymentRequest> reqCaptor = ArgumentCaptor.forClass(CreatePaymentRequest.class);
         verify(walletProvider, times(1)).processPayment(reqCaptor.capture());

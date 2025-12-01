@@ -1,6 +1,5 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd;
 
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.ReceiptStatus;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.Strategy.CashPaymentStrategy;
@@ -47,7 +46,7 @@ class CashPaymentStrategyTest {
         var promo = new PromotionResponse(95000.0, List.of("PROMO-5", "PROMO-10"));
         when(promotionProvider.applyPromotions("ORDER-1")).thenReturn(promo);
 
-        var receipt = new CreateReceiptResponse("R-1", "ORDER-1", "STORE-1", 95000.0, ReceiptStatus.PENDING);
+        var receipt = new CreateReceiptResponse("R-1", "ORDER-1", "STORE-1", 95000.0, PaymentStatus.PENDING, "QR-1");
         when(receiptProvider.createReceipt(any(Payment.class))).thenReturn(receipt);
 
         CreatePaymentResponse response = strategy.createPayment(request);
@@ -57,7 +56,7 @@ class CashPaymentStrategyTest {
         assertEquals("ORDER-1", response.orderId());
         assertEquals("STORE-1", response.storeId());
         assertEquals(95000.0, response.finalAmount());
-        assertEquals(ReceiptStatus.PENDING, response.receiptStatus());
+        assertEquals(PaymentStatus.PENDING, response.paymentStatus());
 
         verify(promotionProvider, times(1)).applyPromotions("ORDER-1");
 
