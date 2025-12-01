@@ -116,7 +116,7 @@ class ApplicationMapperTest {
     void receiptResponseToPaymentResponse_ShouldMapAllFields() {
         // Given
         CreateReceiptResponse receiptResponse = new CreateReceiptResponse(
-                "RECEIPT-123", "ORDER-123", "STORE-789", 95000.0, ReceiptStatus.PAYED
+                "RECEIPT-123", "ORDER-123", "CLIENT-456", "STORE-789", 95000.0, ReceiptStatus.PAYED, "QR-123"
         );
 
         // When

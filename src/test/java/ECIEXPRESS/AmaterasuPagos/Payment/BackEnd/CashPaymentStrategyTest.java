@@ -47,7 +47,7 @@ class CashPaymentStrategyTest {
         var promo = new PromotionResponse(95000.0, List.of("PROMO-5", "PROMO-10"));
         when(promotionProvider.applyPromotions("ORDER-1")).thenReturn(promo);
 
-        var receipt = new CreateReceiptResponse("R-1", "ORDER-1", "STORE-1", 95000.0, ReceiptStatus.PENDING);
+            var receipt = new CreateReceiptResponse("R-1", "ORDER-1","CLIENT-1","STORE-1", 95000.0, ReceiptStatus.PENDING, "QR-1");
         when(receiptProvider.createReceipt(any(Payment.class))).thenReturn(receipt);
 
         CreatePaymentResponse response = strategy.createPayment(request);

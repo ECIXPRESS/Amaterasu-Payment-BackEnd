@@ -5,8 +5,10 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.ReceiptStatu
 public record CreateReceiptResponse(
         String receiptId,
         String orderId,
+        String clientId,
         String storeId,
         double finalAmount,
-        ReceiptStatus receiptStatus
+        ReceiptStatus receiptStatus,
+        String qrCode
 ){
 }

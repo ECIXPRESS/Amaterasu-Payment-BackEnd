@@ -1,5 +1,7 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model;
 
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.BankAccountType;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.BankPaymentType;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentMethodType;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -20,13 +22,4 @@ public abstract class PaymentMethod {
     private PaymentMethodType paymentMethodType;
 
     public abstract PaymentMethod createPaymentMethod();
-
-    public String getBankReceiptNumber() {
-        return null;
-    }
-
-    public String getBankName() {
-        return null;
-    }
-
 }

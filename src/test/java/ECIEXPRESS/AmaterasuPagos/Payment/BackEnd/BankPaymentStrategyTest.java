@@ -67,7 +67,7 @@ class BankPaymentStrategyTest {
                 true, "BRN-123", "AUTH-456", "APPROVED", "APPROVED", BankResponseCode.APPROVED, 90000.0, "COP");
         when(bankGatewayProvider.processPayment(any(CreatePaymentRequest.class))).thenReturn(gatewayResponse);
 
-        var receipt = new CreateReceiptResponse("R-3", "ORDER-3", "STORE-3", 90000.0, ReceiptStatus.PAYED);
+        var receipt = new CreateReceiptResponse("R-3", "ORDER-3","CLIENT-1", "STORE-3", 90000.0, ReceiptStatus.PAYED, "QR-3");
         when(receiptProvider.createReceipt(any(Payment.class))).thenReturn(receipt);
 
         CreatePaymentResponse response = strategy.createPayment(request);

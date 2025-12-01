@@ -53,7 +53,7 @@ class WalletPaymentStrategyTest {
         when(walletProvider.processPayment(any(CreatePaymentRequest.class)))
                 .thenReturn(new CreateWalletResponse(PaymentStatus.COMPLETED));
 
-        var receipt = new CreateReceiptResponse("R-2", "ORDER-2", "STORE-2", 70000.0, ReceiptStatus.PAYED);
+        var receipt = new CreateReceiptResponse("R-2", "ORDER-2", "CLIENT-1","STORE-2", 70000.0, ReceiptStatus.PAYED, "QR-2");
         when(receiptProvider.createReceipt(any(Payment.class))).thenReturn(receipt);
 
         CreatePaymentResponse response = strategy.createPayment(request);

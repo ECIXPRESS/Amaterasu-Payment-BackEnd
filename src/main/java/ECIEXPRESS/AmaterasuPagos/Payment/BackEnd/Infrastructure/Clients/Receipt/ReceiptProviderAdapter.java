@@ -44,7 +44,7 @@ public class ReceiptProviderAdapter implements ReceiptProvider {
 
         } catch (Exception e) {
             log.error("Error processing receipt for order {} Error: {}",payment.getOrderId(), e.getMessage());
-            return new CreateReceiptResponse(null,null, null,0,null);
+            return new CreateReceiptResponse(null,null, null,null, 0,null,null);
         }
     }
 
@@ -54,12 +54,9 @@ public class ReceiptProviderAdapter implements ReceiptProvider {
                     payment.getOrderId(),
                     payment.getClientId(),
                     payment.getStoreId(),
-                    payment.getPaymentMethod().getBankReceiptNumber(),
-                    payment.getPaymentMethod().getBankName(),
                     payment.getOriginalAmount(),
                     payment.getFinalAmount(),
                     payment.getPaymentMethod(),
-                    payment.getPaymentStatus(),
                     payment.getTimeStamps(),
                     payment.getAppliedPromotions());
         }
@@ -68,12 +65,9 @@ public class ReceiptProviderAdapter implements ReceiptProvider {
                     payment.getOrderId(),
                     payment.getClientId(),
                     payment.getStoreId(),
-                    payment.getPaymentMethod().getBankReceiptNumber(),
-                    payment.getPaymentMethod().getBankName(),
                     payment.getOriginalAmount(),
                     payment.getFinalAmount(),
                     payment.getPaymentMethod(),
-                    payment.getPaymentStatus(),
                     payment.getTimeStamps(),
                     payment.getAppliedPromotions());
         }
