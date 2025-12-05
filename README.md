@@ -1,72 +1,117 @@
-# Amaterasu-Transaction-BackEnd
+<div align="center">
 
-# 📚 ECIEXPRESS — Sistema de Transacciones
+# 📚 ECIEXPRESS — Microservicio de Pagos
 
-> <b>Optimización y trazabilidad de solicitudes académicas en la Escuela Colombiana de Ingeniería Julio Garavito</b>
+### *"Sin filas, sin estrés, ECIEXPRESS"*
+
+---
+
+### 🛠️ Stack Tecnológico
+
+![Java](https://img.shields.io/badge/Java-17-007396?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.0-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+![WebSocket](https://img.shields.io/badge/WebSocket-STOMP-010101?style=for-the-badge&logo=socket.io&logoColor=white)
+
+### ☁️ Infraestructura & Calidad
+
+![Azure](https://img.shields.io/badge/Azure-Cloud-0078D4?style=for-the-badge&logo=microsoft-azure&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Container-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-Build-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white)
+
+### 🏗️ Arquitectura
+
+![Hexagonal](https://img.shields.io/badge/Architecture-Hexagonal-blueviolet?style=for-the-badge)
+![Clean Architecture](https://img.shields.io/badge/Clean-Architecture-blue?style=for-the-badge)
+![REST API](https://img.shields.io/badge/REST-API-009688?style=for-the-badge)
+
+</div>
 
 ---
 
 ## 📑 Tabla de Contenidos
 
-1. 👤 [Integrantes](#1--integrantes)
-2. 🎯 [Objetivo del Proyecto](#2--objetivo-del-proyecto)
-3. ⚡ [Funcionalidades principales](#3--funcionalidades-principales)
-4. 📋 [Manejo de Estrategia de versionamiento y branches](#4--manejo-de-estrategia-de-versionamiento-y-branches)
-    - 4.1 [Convenciones para crear ramas](#41-convenciones-para-crear-ramas)
-    - 4.2 [Convenciones para crear commits](#42-convenciones-para-crear-commits)
-5. ⚙️ [Tecnologías utilizadas](#5--tecnologias-utilizadas)
-6. 🧩 [Funcionalidad](#6--funcionalidad)
-7. 📊 [Diagramas](#7--diagramas)
-    - 7.1 🟩 [Diagrama de Contexto](#71--diagrama-de-contexto)
-    - 7.2 🟦 [Diagrama de Casos de Uso](#72--diagrama-de-casos-de-uso)
-    - 7.3 🟨 [Diagrama de Clases](#73--diagrama-de-clases)
-    - 7.4 🟥 [Diagrama de Componentes — General](#74--diagrama-de-componentes--general)
-    - 7.5 🟨 [Diagrama de Componentes — Específico (Backend)](#75--diagrama-de-componentes--especifico-backend)
-    - 7.6 🟩 [Diagrama de Base de Datos (MongoDB)](#76--diagrama-de-base-de-datos-mongodb)
-    - 7.7 🛰️ [Diagrama de Despliegue](#77--diagrama-de-despliegue)
-8. 🌐 [Endpoints expuestos y su información de entrada y salida](#8--endpoints-expuestos-y-su-informacion-de-entrada-y-salida)
-9. ⚠️ [Manejo de Errores](#9--manejo-de-errores)
-10. 🧪 [Evidencia de las pruebas y cómo ejecutarlas](#10--evidencia-de-las-pruebas-y-como-ejecutarlas)
-11. 🗂️ [Código de la implementación organizado en las respectivas carpetas](#11--codigo-de-la-implementacion-organizado-en-las-respectivas-carpetas)
-12. 📝 [Código documentado](#12--codigo-documentado)
-13. 🧾 [Pruebas coherentes con el porcentaje de cobertura expuesto](#13--pruebas-coherentes-con-el-porcentaje-de-cobertura-expuesto)
-14. 🚀 [Ejecución del Proyecto](#14--ejecucion-del-proyecto)
-15. ☁️ [Evidencia de CI/CD y Despliegue en Azure](#15--evidencia-de-cicd-y-despliegue-en-azure)
-16. 🤝 [Contribuciones y agradecimientos](#16--contribuciones-y-agradecimientos)
-
+1. [👤 Integrantes](#1--integrantes)
+2. [🎯 Objetivo del Microservicio](#2--objetivo-del-microservicio)
+3. [⚡ Funcionalidades Principales](#3--funcionalidades-principales)
+4. [📋 Estrategia de Versionamiento y Branches](#4--manejo-de-estrategia-de-versionamiento-y-branches)
+   - [4.1 Convenciones para crear ramas](#41-convenciones-para-crear-ramas)
+   - [4.2 Convenciones para crear commits](#42-convenciones-para-crear-commits)
+5. [⚙️ Tecnologías Utilizadas](#5--tecnologias-utilizadas)
+6. [🧩 Funcionalidad](#6--funcionalidades)
+7. [📊 Diagramas](#7--diagramas)
+8. [⚠️ Manejo de Errores](#8--manejo-de-errores)
+9. [🧪 Evidencia de Pruebas y Ejecución](#9--evidencia-de-las-pruebas-y-como-ejecutarlas)
+10. [🗂️ Organización del Código](#10--codigo-de-la-implementacion-organizado-en-las-respectivas-carpetas)
+11. [🚀 Ejecución del Proyecto](#11--ejecución-del-proyecto)
+12. [☁️ CI/CD y Despliegue en Azure](#12--cicd-y-despliegue-en-azure)
+13. [🤝 Contribuciones y Metodología](#13--contribuciones-y-metodologia)
 
 ---
 
 ## 1. 👤 Integrantes:
 
 - Elizabeth Correa
-- Carolina Cepeda
 - Daniel Palacios
-- David Aguilar
+- David Salamanca
 - Tomas Ramirez
+- Carolina Cepeda
 
-## 2. 🎯 Objetivo del Proyecto
+## 2. 🎯 Objetivo del microservicio
 
-En la actualidad, las cafeterias y papelerias dentro de nuestro campus universitario se presentan serias dificultades
-operativas durante las horas pico. Estudiantes, docentes y personal administrativo deben enfrentar largas filas y
-esperas prolongadas para adquirir sus alimentos o materiales pedidos, lo que genera gran perdida de tiempo, generando
-retrasos a clases, desorganizacon y una mala experiencia tanto para los usuarios como para los trabajadores.
+El microservicio de Pagos tiene como objetivo procesar de forma segura, eficiente y trazable todas las transacciones económicas dentro de ECIExpress, permitiendo a los usuarios pagar sus pedidos mediante efectivo, billetera virtual o medios bancarios. Este servicio centraliza la lógica financiera del sistema, aplicando promociones, validando métodos de pago, integrándose con gateways externos (como PayU) y generando la información necesaria para la emisión de comprobantes digitales.
 
-El modelo de atención presencial genera mucha agromelación, errores en pedidos y pagos, poca trazabilidad en las ventas,
-generando poca eficiencia operativa. Por lo cual se requiere un sistema digital que optimice los procesos de compra, para
-reducir los tiempos de espera y mejorando la experiencia de todos.
+Asimismo, garantiza la coherencia del flujo de compra colaborando con otros microservicios Pedidos, Billetera, Promociones y Recibosbpara asegurar que cada transacción sea consistente, auditable y actualice correctamente el estado del pedido. De este modo, el microservicio contribuye a la digitalización de los procesos de pago dentro del campus y a la reducción de tiempos de espera en cafeterías y papelerías universitarias.
 
 ---
 
 ## 3. ⚡ Funcionalidades principales
 
+<div align="center">
 
+<table>
+  <thead>
+    <tr>
+      <th>💡 Funcionalidad</th>
+      <th>Descripción Breve</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Pagos Multicanal</strong></td>
+      <td>Procesa pagos por efectivo, billetera o banco.</td>
+    </tr>
+    <tr>
+      <td><strong>Promociones Automáticas</strong></td>
+      <td>Aplica descuentos y recalcula el monto final.</td>
+    </tr>
+    <tr>
+      <td><strong>Validación Bancaria</strong></td>
+      <td>Verifica datos bancarios y conecta con PayU.</td>
+    </tr>
+    <tr>
+      <td><strong>Recibos Digitales</strong></td>
+      <td>Genera y envía comprobantes de pago.</td>
+    </tr>
+    <tr>
+      <td><strong>Integración con Microservicios</strong></td>
+      <td>Sincroniza con Wallet, Promociones y Recibos.</td>
+    </tr>
+    <tr>
+      <td><strong>Estados de Pago</strong></td>
+      <td>PENDING, PROCESSING, COMPLETED, FAILED, REFUNDED.</td>
+    </tr>
+    <tr>
+      <td><strong>Manejo de Errores</strong></td>
+      <td>Respuestas claras y consistentes.</td>
+    </tr>
+  </tbody>
+</table>
+
+</div>
 
 ## 4. 📋 Manejo de Estrategia de versionamiento y branches
 
 ### Estrategia de Ramas (Git Flow)
-
--
 
 ### Ramas y propósito
 - Manejaremos GitFlow, el modelo de ramificación para el control de versiones de Git
@@ -153,85 +198,416 @@ hotfix/[descripcion-breve-del-fix]
 - `feat`: Nueva funcionalidad
 - `fix`: Corrección de errores
 - `docs`: Cambios en documentación
-- `style`: Cambios de formato/estilo (espacios, punto y coma, etc.)
-- `refactor`: Refactorización de código sin cambios funcionales
-- `test`: Agregar o modificar tests
-- `chore`: Tareas de mantenimiento, configuración, dependencias
-
-#### **Ejemplos de commits específicos:**
-```bash
-# ✅ BUENOS EJEMPLOS
-git commit -m "26-feat: agregar validación de email en formulario login"
-git commit -m "24-fix: corregir error de navegación en header mobile"
 
 
-# ❌ EVITAR 
-git commit -m "23-feat: agregar login"
-git commit -m "24-fix: arreglar bug"
+## 5. ⚙️ Tecnologías Utilizadas
 
+> 🧠 **Stack tecnológico seleccionado** para asegurar **escalabilidad**, **modularidad**, **seguridad**, **trazabilidad** y **mantenibilidad**, aplicando buenas prácticas de ingeniería de software.
+
+
+## 6. 🧩 Funcionalidades
+
+El backend de **ECIExpress** implementa un **sistema de gestión de pagos** que facilita la transacción económica entre usuarios y el sistema.
+
+---
+
+### 🔑 Funcionalidades principales
+
+### 1️⃣ Procesamiento de Pagos: Estrategias y Flujo
+
+El microservicio procesa pagos según el método seleccionado por el cliente (Efectivo, Banco o Billetera), aplicando promociones y generando el recibo correspondiente.
+
+**Endpoint principal:**  
+`POST /api/v1/payments/ProcessPayment`
+
+---
+
+### 🚦 Estrategias de Pago Implementadas
+
+<div align="center">
+
+| 💳 **Método** | 📝 **Descripción** |
+|:-------------:|:------------------|
+| <b>CASH (Efectivo)</b> | Pago directo, sin validaciones bancarias. |
+| <b>BANK (Bancario)</b> | Validación de datos bancarios y procesamiento con PayU. |
+| <b>WALLET (Billetera)</b> | Integración con el servicio de billetera digital. |
+
+</div>
+
+---
+
+### 🧭 Flujos de Procesamiento
+
+<details>
+<summary><strong>🟢 Estrategia CASH (Efectivo)</strong></summary>
+
+1. El cliente envía una solicitud de pago al controlador.
+2. El controlador delega al servicio de pagos, que selecciona la estrategia CASH.
+3. Se consulta el servicio de promociones para obtener descuentos aplicables.
+4. Se calcula el monto final y se crea el objeto de pago en efectivo.
+5. Se genera el recibo a través del servicio externo de recibos.
+6. Se retorna la respuesta con el ID del recibo y el monto final al cliente.
+
+</details>
+
+<details>
+<summary><strong>🔵 Estrategia BANK (Bancario)</strong></summary>
+
+1. El cliente envía una solicitud de pago con datos bancarios.
+2. El controlador delega al servicio de pagos, que selecciona la estrategia BANK.
+3. Se validan los datos bancarios (algoritmo de Luhn, fecha de expiración, CVV).
+4. Si la validación es exitosa:
+    - Se consultan las promociones disponibles.
+    - Se procesa el pago con el gateway PayU.
+    - PayU retorna la respuesta de aprobación/rechazo.
+    - Se crea el objeto de pago bancario.
+    - Se genera el recibo.
+5. Si la validación falla: Se retorna error 400 inmediatamente.
+
+</details>
+
+<details>
+<summary><strong>🟠 Estrategia WALLET (Billetera)</strong></summary>
+
+1. El cliente envía una solicitud de pago con billetera digital.
+2. El controlador delega al servicio de pagos, que selecciona la estrategia WALLET.
+3. Se consultan las promociones disponibles.
+4. Se procesa el pago con el servicio de billetera (verifica saldo y realiza el débito).
+5. El servicio de billetera retorna el estado del pago.
+6. Se crea el objeto de pago con billetera.
+7. Se genera el recibo correspondiente.
+8. Se retorna la respuesta al cliente.
+
+</details>
+
+---
+
+### 📦 Estructura de la Solicitud (Request)
+
+<div align="center">
+
+| 🏷️ Campo              | 🗃️ Tipo   | 🟢 Obligatorio | 📝 Descripción                      |
+|-----------------------|-----------|:-------------:|-------------------------------------|
+| orderId               | String    | Sí            | Identificador de la orden           |
+| clientId              | String    | Sí            | Identificador del cliente           |
+| storeId               | String    | Sí            | Identificador de la tienda          |
+| originalAmount        | Double    | Sí            | Monto antes de promociones          |
+| paymentMethod.type    | Enum      | Sí            | CASH, WALLET o BANK                 |
+| bankDetails           | Object    | Solo BANK     | Datos bancarios (si aplica)         |
+
+</div>
+
+---
+
+### 📦 Estructura de la Respuesta (Response)
+
+<div align="center">
+
+| 🏷️ Campo        | 🗃️ Tipo   | 📝 Descripción                      |
+|-----------------|-----------|-------------------------------------|
+| receiptId       | String    | ID del recibo generado              |
+| orderId         | String    | ID de la orden procesada            |
+| storeId         | String    | ID de la tienda                     |
+| finalAmount     | Double    | Monto final con descuentos          |
+| receiptStatus   | Enum      | PAYED, PENDING o REFUNDED           |
+
+</div>
+
+---
+
+### ✅ Happy Path (Ejemplo de Uso Exitoso)
+
+A continuación se muestra un ejemplo de una solicitud exitosa para un pago en efectivo (**CASH**), donde el flujo se completa correctamente.
+
+**Request (Solicitud):**
+```json
+POST /api/v1/payments/ProcessPayment
+{
+  "orderId": "ORD-2025-001",
+  "clientId": "CLIENT-123",
+  "storeId": "STORE-ABC",
+  "originalAmount": 15000.0,
+  "paymentMethod": {
+    "type": "CASH"
+  }
+}
 ```
 
-#### **Reglas para commits específicos:**
-1. **Un commit = Una acción específica**: Cada commit debe representar un cambio lógico y completo
-2. **Máximo 72 caracteres**: Para que sea legible en todas las herramientas Git
-3. **Usar imperativo**: "agregar", "corregir", "actualizar" (no "agregado", "corrigiendo")
-4. **Ser descriptivo**: Especificar QUÉ se cambió y DÓNDE
-5. **Commits frecuentes**: Mejor muchos commits pequeños que pocos grandes
+**Response (Respuesta):**
+```json
+200 OK
+{
+  "receiptId": "REC-998877",
+  "orderId": "ORD-2025-001",
+  "storeId": "STORE-ABC",
+  "finalAmount": 15000.0,
+  "receiptStatus": "PENDING"
+}
+```
 
-#### **Beneficios de commits específicos:**
-- 🔄 **Rollback preciso**: Poder revertir solo la parte problemática
-- 🔍 **Debugging eficiente**: Identificar rápidamente cuándo se introdujo un bug
-- 📖 **Historial legible**: Entender la evolución del código
-- 🤝 **Colaboración mejorada**: Reviews más fáciles y claras
+> **Nota:** En este flujo, el sistema recibió la orden, calculó el monto y generó un recibo en estado `PENDING` listo para ser pagado en caja.
+
+---
+
+### 🖼️ Diagramas de Secuencia
+
+- **CASH:**  
+
+  ![Diagrama de Secuencia CASH](docs/images/sequence_cash.png)
+
+
+- **BANK:**  
+
+  ![Diagrama de Secuencia BANK](docs/images/sequence_bank.png)
+
+- **WALLET:**  
+
+  ![Diagrama de Secuencia WALLET](docs/images/sequence_wallet.png)
+
+---
+
+> Cada estrategia encapsula su lógica, permitiendo agregar nuevos métodos de pago sin modificar el código existente y garantizando un flujo seguro, auditable y eficiente.
+
+---
+
+## 7. 📊 Diagramas
+
+Esta sección muestra los diagramas clave del microservicio de pagos, ilustrando su arquitectura, componentes principales y despliegue.
+
+---
+
+### 🏗️ Diagrama de Componentes — Vista General
+<div align="center">
+<img src="docs/images/componentesGeneral.png" alt="Diagrama de Componentes General" width="600"/>
+</div>
 
 
 ---
 
+### 🔍 Diagrama de Componentes — Vista Específica
 
-## 5. ⚙️Tecnologías utilizadas
+<div align="center">
+<img src="docs/images/componentesEspecifico.png" alt="Diagrama de Componentes Específico" width="600"/>
+</div>
 
-El backend del sistema ECIExpress fue desarrollado con una arquitectura basada en **Spring Boot** y componentes del
-ecosistema **Java**, garantizando modularidad, mantenibilidad, seguridad y facilidad de despliegue. A continuación se
-detallan las principales tecnologías empleadas en el proyecto:
+**Arquitectura Hexagonal:**  
+El microservicio de Pagos separa controladores, casos de uso, lógica de negocio y adaptadores externos para mantener modularidad y escalabilidad.
 
-| **Tecnología / Herramienta** | **Versión / Framework** | **Uso principal en el proyecto** |
-|------------------------------|--------------------------|----------------------------------|
-| **Java OpenJDK** | 17 | Lenguaje de programación base del backend, orientado a objetos y multiplataforma. |
-| **Spring Boot** | 3.x | Framework principal para la creación del API REST, manejo de dependencias e inyección de componentes. |
-| **Spring Web** | — | Implementación del modelo MVC y exposición de endpoints REST. |
-| **Spring Security** | — | Configuración de autenticación y autorización de usuarios mediante roles y validación de credenciales. |
-| **Spring Data MongoDB** | — | Integración con la base de datos NoSQL MongoDB mediante el patrón Repository. |
-| **MongoDB Atlas** | 6.x | Base de datos NoSQL en la nube utilizada para almacenar las entidades del sistema. |
-| **Apache Maven** | 3.9.x | Gestión de dependencias, empaquetado del proyecto y automatización de builds. |
-| **Lombok** | — | Reducción de código repetitivo con anotaciones como `@Getter`, `@Setter`, `@Builder` y `@AllArgsConstructor`. |
-| **JUnit 5** | — | Framework para pruebas unitarias que garantiza el correcto funcionamiento de los servicios. |
-| **Mockito** | — | Simulación de dependencias para pruebas unitarias sin requerir acceso a la base de datos real. |
-| **JaCoCo** | — | Generación de reportes de cobertura de código para evaluar la efectividad de las pruebas. |
-| **SonarQube** | — | Análisis estático del código fuente y control de calidad para detectar vulnerabilidades y malas prácticas. |
-| **Swagger (OpenAPI 3)** | — | Generación automática de documentación y prueba interactiva de los endpoints REST. |
-| **Postman** | — | Entorno de pruebas de la API, utilizado para validar respuestas en formato JSON con los métodos `POST`, `GET`, `PATCH` y `DELETE`. |
-| **Docker** | — | Contenerización del servicio para garantizar despliegues consistentes en distintos entornos. |
-| **Azure App Service** | — | Entorno de ejecución en la nube para el despliegue automático del backend. |
-| **Azure DevOps** | — | Plataforma para la gestión ágil del proyecto, seguimiento de tareas y control de versiones. |
-| **GitHub Actions** | — | Configuración de pipelines de integración y despliegue continuo (CI/CD). |
-| **SSL / HTTPS** | — | Implementación de certificados digitales para asegurar la comunicación entre cliente y servidor. |
+**Flujo principal:**
 
-> 🧠 Estas tecnologías fueron seleccionadas para asegurar **escalabilidad**, **modularidad**, **seguridad**, **trazabilidad** y **mantenibilidad** del sistema, aplicando buenas prácticas de ingeniería de software y estándares de desarrollo moderno.
+- **PaymentController**
+  - Recibe la solicitud `CreatePaymentRequest`.
+  - Delegación al servicio de pagos (`PaymentService`), que orquesta el proceso.
+
+**Estrategias de Pago:**
+
+- **🟢 CashPaymentStrategy**
+  - Aplica promociones.
+  - Genera el recibo sin validaciones adicionales.
+
+- **🔵 BankPaymentStrategy**
+  - Valida datos bancarios (Luhn, CVV, expiración).
+  - Calcula un risk score.
+  - Procesa la transacción con PayU mediante `PayuBankGatewayAdapter`.
+  - Genera el recibo.
+
+- **🟠 WalletPaymentStrategy**
+  - Verifica saldo con `WalletProvider`.
+  - Aplica promociones.
+  - Genera el recibo.
+
+**Integración y Adaptadores:**
+
+- **Ports:**  
+  - `PromotionProvider`, `ReceiptProvider`, `BankGatewayProvider`, `WalletProvider`  
+  Definen interfaces independientes del dominio.
+- **Adapters:**  
+  Implementan los puertos y conectan el servicio con APIs externas vía REST, desacoplando el dominio de detalles técnicos.
+
+### 🔌 Servicios Externos Integrados
+
+<div align="center">
+
+| 🌍 **Servicio** | 📋 **Responsabilidad** |
+|:---------------|:-----------------------|
+| **Promotion Service** | Aplicar descuentos a órdenes |
+| **Receipt Service** | Generar recibos de pago |
+| **Wallet Service** | Procesar pagos con billetera |
+| **PayU Gateway** | Procesar transacciones bancarias |
+
+</div>
+
+**Dominio y Mapeo:**
+
+- Entidades (`Payment`, `CashPayment`, `BankPayment`, `WalletPayment`) encapsulan la lógica central.
+- Contextos y DTOs gestionan los datos necesarios en cada proceso.
+- `ApplicationMapper` transforma los datos entre capas, asegurando respuestas completas y correctas.
 
 
-## 6. 🧩 Funcionalidad
+> El diagrama ilustra cómo cada estrategia de pago encapsula su lógica, permitiendo flexibilidad y facilidad de mantenimiento. La transición entre componentes y adaptadores garantiza que el microservicio pueda evolucionar e integrarse con nuevos servicios externos sin afectar la lógica de negocio.
+
+---
+
+### 📦 Diagrama de Clases del Dominio
+
+<div align="center">
+<img src="docs/images/clases.png" alt="Diagrama de Clases" width="600"/>
+</div>
+
+**Resumen del diseño de dominio:**
+
+- El microservicio aplica **Arquitectura Hexagonal**, separando dominio, lógica de aplicación e infraestructura.
+- La entidad central es **Payment** (abstracta), de la que derivan:
+  - **CashPayment**: pagos en efectivo.
+  - **BankPayment**: pagos bancarios con validación y uso de PayU.
+  - **WalletPayment**: pagos con billetera digital.
+- Cada tipo de pago incluye solo la información necesaria para su proceso:
+  - *BankPayment* almacena validaciones y la respuesta del gateway.
+  - *CashPayment* no requiere datos adicionales.
+- El patrón **Strategy** permite que cada estrategia (`CashPaymentStrategy`, `BankPaymentStrategy`, `WalletPaymentStrategy`) encapsule su propia lógica:
+  - Validaciones
+  - Integración con servicios externos
+  - Generación de recibos
+- El patrón **Adapter** facilita la comunicación con servicios externos:
+  - `PayuBankGatewayAdapter` para PayU
+  - `PromotionProviderAdapter` para promociones
+  - `ReceiptProviderAdapter` para recibos
+  - `WalletProviderAdapter` para billetera
+- Los adaptadores desacoplan el dominio de detalles técnicos (HTTP, infraestructura).
+- La validación bancaria se realiza con **ValidationService**:
+  - Algoritmo de Luhn, fechas, CVV, risk score.
+  - Resultado encapsulado en `BankValidationResult` (lista de errores y severidad).
+- Los objetos de dominio (`BankDetails`, `GatewayResponse`, `TimeStamps`, `ValidationError`) siguen el principio de responsabilidad única.
+- El record **Context** agrupa la información necesaria para crear un pago, facilitando la comunicación ordenada entre capas.
 
 
+> Este diseño permite agregar nuevos métodos de pago y servicios externos sin modificar la lógica existente, asegurando flexibilidad, mantenibilidad y trazabilidad en todas las transacciones.
 
-## 7. 📊 Diagramas
-
-
-
-## 8. 🌐 Endpoints expuestos y su información de entrada y salida
+---
 
 
+### 📦 DTOs Principales
 
-## 9. ⚠️ Manejo de Errores
+<div align="center">
+<div style="background:#111; color:#fff; border-radius:12px; padding:24px 12px; box-shadow:0 2px 12px #0002;">
+
+<table style="border:2px solid #4A90E2; border-radius:8px;">
+  <caption style="font-size:1.15em; font-weight:bold; color:#4A90E2; padding:8px;">📨 <u>Request DTOs</u></caption>
+  <thead style="background:#222; color:#fff;">
+    <tr>
+      <th style="padding:8px;">DTO</th>
+      <th style="padding:8px;">Atributos Principales</th>
+      <th style="padding:8px;">Descripción</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><b>CreatePaymentRequest</b></td>
+      <td>orderId, clientId, storeId, originalAmount, paymentMethod, bankDetails</td>
+      <td>Solicitud inicial para procesar un pago</td>
+    </tr>
+    <tr>
+      <td><b>PromotionRequest</b></td>
+      <td>orderId</td>
+      <td>Consulta de promociones aplicables a una orden</td>
+    </tr>
+    <tr>
+      <td><b>CreateReceiptRequest</b></td>
+      <td>orderId, clientId, storeId, finalAmount, paymentMethod</td>
+      <td>Generación de recibo de pago</td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+<table style="border:2px solid #43A047; border-radius:8px;">
+  <caption style="font-size:1.15em; font-weight:bold; color:#43A047; padding:8px;">📤 <u>Response DTOs</u></caption>
+  <thead style="background:#222; color:#fff;">
+    <tr>
+      <th style="padding:8px;">DTO</th>
+      <th style="padding:8px;">Atributos Principales</th>
+      <th style="padding:8px;">Descripción</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><b>CreatePaymentResponse</b></td>
+      <td>receiptId, orderId, storeId, finalAmount, receiptStatus</td>
+      <td>Respuesta del procesamiento de pago</td>
+    </tr>
+    <tr>
+      <td><b>PromotionResponse</b></td>
+      <td>finalAmount, appliedPromotions</td>
+      <td>Monto final con descuentos aplicados</td>
+    </tr>
+    <tr>
+      <td><b>CreateReceiptResponse</b></td>
+      <td>receiptId, orderId, receiptStatus</td>
+      <td>Confirmación de recibo generado</td>
+    </tr>
+    <tr>
+      <td><b>PayuPaymentResponse</b></td>
+      <td>code, transactionResponse</td>
+      <td>Respuesta del gateway PayU</td>
+    </tr>
+    <tr>
+      <td><b>CreateWalletResponse</b></td>
+      <td>paymentStatus</td>
+      <td>Estado del pago con billetera</td>
+    </tr>
+  </tbody>
+</table>
+
+</div>
+</div>
+
+---
+
+
+### 🗄️ Diagrama de Despliegue
+
+<div align="center">
+<img src="docs/images/despliegue.png" alt="Diagrama de Despliegue " width="600"/>
+</div>
+
+---
+
+#### 🚀 Despliegue e Infraestructura
+
+- El microservicio de **Pagos** se ejecuta como un contenedor Docker en **Azure App Service**.
+- Las imágenes Docker se almacenan y versionan en **Azure Container Registry (ACR)**.
+- El pipeline de **CI/CD** automatiza la construcción, pruebas y despliegue usando **GitHub Actions**:
+  - `ci.yml`: Pruebas unitarias, cobertura y análisis de calidad en cada push/PR.
+  - `cd_dev.yml`: Construcción y despliegue automático en ambiente de desarrollo.
+  - `cd_prod.yml`: Despliegue automático en producción al actualizar `main`.
+- El frontend (React + TypeScript) se comunica con el microservicio a través de un **API Gateway**, que gestiona enrutamiento, CORS, autenticación y balanceo de carga.
+- Las peticiones llegan al contenedor en Azure, donde el servicio procesa la lógica y persiste los datos en **MongoDB Atlas** (colección `Wallets` para saldos, clientId y timestamps).
+- El microservicio utiliza un **Dockerfile multi-stage**:
+  - 1️⃣ Compilación con Maven.
+  - 2️⃣ Ejecución con un runtime ligero (`eclipse-temurin:17-jre-alpine`).
+- Para desarrollo local existe un `docker-compose.yml`.
+- En producción, la configuración se gestiona con variables de entorno en Azure (`MONGODB_URI`, `SPRING_PROFILES_ACTIVE`).
+- **MongoDB Atlas** garantiza alta disponibilidad, backups automáticos y acceso seguro, asegurando la confiabilidad del servicio financiero.
+
+---
+
+<div align="center">
+
+| 🌐 **Componente**         | 📝 **Descripción**                                 |
+|--------------------------|---------------------------------------------------|
+| Azure App Service        | Hosting del contenedor Docker del microservicio   |
+| Azure Container Registry | Almacenamiento y versionado de imágenes Docker    |
+| GitHub Actions           | Automatización de CI/CD y calidad de código       |
+| API Gateway              | Punto de entrada único para el frontend           |
+| MongoDB Atlas            | Base de datos NoSQL, alta disponibilidad y backups|
+
+</div>
+
+---
+
+
+## 8. ⚠️ Manejo de Errores
 
 El backend de **ECIExpress** implementa un **mecanismo centralizado de manejo de errores** que garantiza uniformidad, claridad y seguridad en todas las respuestas enviadas al cliente cuando ocurre un fallo.
 
@@ -246,23 +622,12 @@ A través de la anotación `@ControllerAdvice`, se centraliza el manejo de error
 
 Cada error se transforma en una respuesta **JSON estandarizada**, que mantiene un formato uniforme para todos los tipos de fallos.
 
-**📋 Estructura del mensaje de error:**
-
-```json
-{
-  "timestamp": "2025-10-28T10:30:00Z",
-  "status": 404,
-  "error": "Not Found",
-  "message": "La materia con ID AYPR no existe.",
-  "path": "/api/subjects/AYPR"
-}
-```
 
 ---
 
 ### ⚙️ Global Exception Handler
 
-El **Global Exception Handler** es una clase con la anotación `@RestControllerAdvice` que captura y maneja todas las excepciones del sistema.  
+El **Global Exception Handler** es una clase con la anotación `@ControllerAdvice` que captura y maneja todas las excepciones del sistema.  
 Utiliza métodos con `@ExceptionHandler` para procesar errores específicos y devolver una respuesta personalizada acorde al tipo de excepción.
 
 **✨ Características principales:**
@@ -274,18 +639,6 @@ Utiliza métodos con `@ExceptionHandler` para procesar errores específicos y de
 - ✅ **Mantiene la aplicación limpia**, eliminando bloques try-catch redundantes
 - ✅ **Mejora la trazabilidad** y facilita la depuración en los entornos de prueba y producción
 
-**🔄 Ejemplo conceptual de funcionamiento:**
-
-Cuando se lanza una excepción del tipo `EntityNotFoundException`, el handler la intercepta y genera automáticamente una respuesta como:
-
-```json
-{
-  "status": 404,
-  "error": "Not Found",
-  "message": "La materia con ID AYPR no existe.",
-  "path": "/api/subjects/AYPR"
-}
-```
 
 ---
 
@@ -295,24 +648,11 @@ Además del manejo global de errores, el sistema utiliza **validaciones automát
 
 Estas validaciones se implementan mediante las anotaciones de **Javax Validation** y **Hibernate Validator**, como `@NotBlank`, `@NotNull`, `@Email`, `@Min`, `@Max`, entre otras.
 
-**📝 Ejemplo de DTO con validaciones:**
 
-```java
-
-```
 
 Si alguno de los campos no cumple las validaciones, se lanza automáticamente una excepción del tipo `MethodArgumentNotValidException`.  
 Esta es capturada por el **Global Exception Handler**, que devuelve una respuesta JSON estandarizada con el detalle del campo inválido.
 
-**⚠️ Ejemplo de respuesta ante error de validación:**
-
-```json
-{
-  "status": 400,
-  "error": "Bad Request",
-  "message": "El campo 'email' debe tener un formato válido."
-}
-```
 
 > 💡 Gracias a este mecanismo, se asegura que las peticiones erróneas sean detectadas desde el inicio, reduciendo fallos en capas más profundas como servicios o repositorios.
 
@@ -320,28 +660,36 @@ Esta es capturada por el **Global Exception Handler**, que devuelve una respuest
 
 ### 📊 Tipos de errores manejados
 
-La siguiente tabla resume los principales tipos de excepciones manejadas en el sistema, junto con su respectivo código HTTP y un ejemplo de mensaje retornado:
+<div align="center">
 
-| **Excepción** | **Código HTTP** | **Descripción del error** | **Ejemplo de mensaje**                                 |
-|---------------|-----------------|---------------------------|--------------------------------------------------------|
-| `IllegalArgumentException` | `400 Bad Request` | Parámetros inválidos o peticiones mal estructuradas | *"El campo 'subjectId' no puede ser nulo."*            |
-| `MethodArgumentNotValidException` | `400 Bad Request` | Error de validación en un DTO o parámetro de entrada | *"El correo electrónico no cumple el formato válido."* |
-| `EntityNotFoundException` | `404 Not Found` | El recurso solicitado no existe en la base de datos | *"La materia con ID AYPR no existe."*                  |
-| `DuplicateKeyException` | `409 Conflict` | Intento de crear un registro que ya existe en MongoDB | *"El usuario ya se encuentra registrado."*             |
-| `AccessDeniedException` | `403 Forbidden` | Intento de acceder a un recurso sin permisos | *"Acceso denegado para el rol Usuario."*               |
-| `Exception` | `500 Internal Server Error` | Error interno no controlado del servidor | *"Error inesperado del servidor."*                     |
+| 🔢 **Código HTTP** | ⚠️ **Escenario** | 💬 **Mensaje de Error** |
+|:------------------:|:----------------|:------------------------|
+| ![400](https://img.shields.io/badge/400-Bad_Request-red?style=flat) | Datos inválidos en la solicitud | `"Invalid input data"` |
+| ![400](https://img.shields.io/badge/400-Bad_Request-red?style=flat) | Validación bancaria fallida | `"Bank validation failed: {detalles}"` |
+| ![404](https://img.shields.io/badge/404-Not_Found-orange?style=flat) | Orden no encontrada en el sistema | `"Order not found: {orderID}"` |
+| ![500](https://img.shields.io/badge/500-Internal_Error-critical?style=flat) | Fallo en gateway de pago PayU | `"Payment gateway error: {detalles}"` |
+| ![500](https://img.shields.io/badge/500-Internal_Error-critical?style=flat) | Error al aplicar promociones | `"Error applying promotions for order {orderId}"` |
+| ![500](https://img.shields.io/badge/500-Internal_Error-critical?style=flat) | Error al procesar recibo | `"Error processing receipt for order {orderId}"` |
+| ![500](https://img.shields.io/badge/500-Internal_Error-critical?style=flat) | Error en servicio de billetera | `"Error processing wallet payment for order {orderId}"` |
+
+</div>
+
 
 ---
 
 ### ✅ Beneficios del manejo centralizado
 
-| **Beneficio** | **Descripción** |
-|---------------|-----------------|
-| 🎯 **Uniformidad** | Todas las respuestas de error tienen el mismo formato JSON |
-| 🔧 **Mantenibilidad** | Agregar nuevas excepciones no requiere modificar cada controlador |
-| 🔒 **Seguridad** | Oculta los detalles internos del servidor y evita exponer trazas del sistema |
-| 📍 **Trazabilidad** | Cada error incluye información contextual (ruta y hora exacta) |
-| 🤝 **Integración fluida** | Facilita la comunicación con el frontend y herramientas como Postman o Swagger |
+<div align="center">
+
+| 🎯 **Beneficio** | 📋 **Descripción** |
+|:-----------------|:-------------------|
+| **🎯 Uniformidad** | Todas las respuestas de error tienen el mismo formato JSON estandarizado |
+| **🔧 Mantenibilidad** | Agregar nuevas excepciones no requiere modificar cada controlador |
+| **🔒 Seguridad** | Oculta los detalles internos del servidor y evita exponer trazas sensibles |
+| **📍 Trazabilidad** | Cada error incluye información contextual (ruta, timestamp y descripción) |
+| **🤝 Integración fluida** | Facilita la comunicación con frontend y herramientas como Postman/Swagger |
+
+</div>
 
 ---
 
@@ -352,65 +700,369 @@ La siguiente tabla resume los principales tipos de excepciones manejadas en el s
 
 ---
 
-## 10. 🧪 Evidencia de las pruebas y cómo ejecutarlas
+## 9. 🧪 Evidencia de las pruebas y cómo ejecutarlas
 
-
-
-## 11. 🗂️ Código de la implementación organizado en las respectivas carpetas
-
-
-
-## 12. 📝 Código documentado
-
-
-
-## 13. 🧾 Pruebas coherentes con el porcentaje de cobertura expuesto
-
-
-
-## 14. 🚀 Ejecución del Proyecto
-
-
-
-## 15. ☁️ Evidencia de CI/CD y Despliegue en Azure
-
-
-
-## 16. 🤝 Contribuciones y agradecimientos
-
-El desarrollo del backend de ECIEXPRESS se realizó aplicando la **metodología ágil Scrum**, promoviendo la colaboración, la mejora continua y la entrega incremental de valor.  
-Durante el proceso, el equipo Amaterasu trabajó en **sprints semanales**, realizando **revisiones de avance**, **dailies** y **retrospectivas**, lo que permitió mantener una comunicación fluida y adaptarse a los cambios de requisitos en tiempo real.
-
-Cada miembro del equipo asumió un rol dentro del marco de Scrum:
-
-| **Rol Scrum** | **Responsabilidad principal** |
-|----------------|-------------------------------|
-| **Product Owner** | Definir y priorizar las historias de usuario en el backlog del producto. |
-| **Scrum Master** | Asegurar la aplicación de la metodología y eliminar impedimentos. |
-| **Developers** | Diseñar, implementar, probar y documentar las funcionalidades. |
-
-**Artefactos y eventos Scrum utilizados:**
-- 📋 **Product Backlog:** listado de funcionalidades priorizadas y mantenidas en Jira/GitHub Projects.
-- 🧩 **Sprint Backlog:** tareas seleccionadas por sprint según la capacidad del equipo.
-- ⚙️ **Daily Scrum:** reuniones cortas de sincronización para identificar bloqueos y avances.
-- 📦 **Sprint Review:** revisión de resultados y demostración del incremento funcional.
-- 🔄 **Sprint Retrospective:** análisis de mejoras en la dinámica y la comunicación del equipo.
-
-> 💡 Gracias al uso de Scrum, el desarrollo de Amaterasu se mantuvo **organizado, transparente y enfocado en la entrega continua de valor**, aplicando principios de autoorganización y aprendizaje colaborativo.
-
-## 🤝 Contribuciones y mantenimiento
-
-**Desarrollado por el equipo Amaterasu – DOSW 2025-2**
-
-### 🙌 ¡Gracias por visitar ECIEXPRESS!
-
-- Si tienes sugerencias, encuentras errores o deseas aportar nuevas funcionalidades, ¡las contribuciones son bienvenidas!
-- Puedes abrir un **issue** o enviar un **pull request** siguiendo las buenas prácticas de colaboración del repositorio.
-
-> 💡 **ECIEXPRESS** es un proyecto académico, pero su arquitectura y calidad están pensadas para ser escalables y adaptables a escenarios reales en instituciones educativas.
+El backend de **ECIExpress** implementa una **estrategia integral de pruebas** que garantiza la calidad, funcionalidad y confiabilidad del código mediante pruebas unitarias y de integración.
 
 ---
 
-### 🚀 ECIEXPRES nació como una idea para optimizar los procesos académicos y terminó convirtiéndose en un proyecto que combina tecnología, trabajo en equipo y propósito!
+### 🎯 Tipos de pruebas implementadas
+
+<div align="center">
+
+| 🧪 **Tipo de Prueba** | 📋 **Descripción** | 🛠️ **Herramientas** |
+|:---------------------|:-------------------|:--------------------|
+| **Pruebas Unitarias** | Validan el funcionamiento aislado de componentes (servicios, estrategias, validadores) | ![JUnit](https://img.shields.io/badge/JUnit_5-25A162?style=flat&logo=junit5&logoColor=white) ![Mockito](https://img.shields.io/badge/Mockito-C5D928?style=flat) |
+| **Cobertura de Código** | Mide el porcentaje de código cubierto por las pruebas | ![JaCoCo](https://img.shields.io/badge/JaCoCo-D1322B?style=flat) |
+| **Pruebas de Integración** | Verifican la interacción entre capas y servicios externos | ![Spring Test](https://img.shields.io/badge/Spring_Test-6DB33F?style=flat&logo=spring&logoColor=white) |
+
+</div>
 
 ---
+
+### 🚀 Cómo ejecutar las pruebas
+
+#### **1️⃣ Ejecutar todas las pruebas**
+
+Desde la raíz del proyecto, ejecuta:
+
+```bash
+mvn clean test
+```
+
+Este comando:
+- Limpia compilaciones anteriores (`clean`)
+- Ejecuta todas las pruebas unitarias y de integración (`test`)
+- Muestra el resultado en la consola
+
+#### **2️⃣ Generar reporte de cobertura con JaCoCo**
+
+```bash
+mvn clean test jacoco:report
+```
+
+El reporte HTML se generará en:
+```
+target/site/jacoco/index.html
+```
+
+Abre este archivo en tu navegador para ver:
+- Cobertura por paquete
+- Cobertura por clase
+- Líneas cubiertas vs. no cubiertas
+
+#### **3️⃣ Ejecutar pruebas desde IntelliJ IDEA**
+
+1. Click derecho sobre la carpeta `src/test/java`
+2. Selecciona **"Run 'Tests in...'**
+3. Ver resultados en el panel inferior
+
+#### **4️⃣ Ejecutar una prueba específica**
+
+```bash
+mvn test -Dtest=CashPaymentStrategyTest
+```
+
+---
+
+### 🧪 Ejemplo de prueba unitaria
+
+A continuación se muestra un ejemplo real de una prueba unitaria para la estrategia de pago en efectivo (`CashPaymentStrategy`), donde se validan las interacciones con los proveedores de promociones y recibos.
+
+```java
+@ExtendWith(MockitoExtension.class)
+class CashPaymentStrategyTest {
+
+    @Mock PromotionProvider promotionProvider;
+    @Mock ReceiptProvider receiptProvider;
+
+    private CashPaymentStrategy strategy;
+
+    @BeforeEach
+    void setUp() {
+        strategy = new CashPaymentStrategy(promotionProvider, receiptProvider);
+    }
+
+    @Test
+    void createPayment_Success() {
+        // Arrange
+        var cash = new Cash();
+        cash.setPaymentMethodType(PaymentMethodType.CASH);
+        var request = new CreatePaymentRequest("ORDER-1", "CLIENT-1", "STORE-1", 100000.0, cash, null);
+
+        var promo = new PromotionResponse(95000.0, List.of("PROMO-5", "PROMO-10"));
+        when(promotionProvider.applyPromotions("ORDER-1")).thenReturn(promo);
+
+        var receipt = new CreateReceiptResponse("R-1", "ORDER-1","CLIENT-1","STORE-1", 95000.0, ReceiptStatus.PENDING, "QR-1");
+        when(receiptProvider.createReceipt(any(Payment.class))).thenReturn(receipt);
+
+        // Act
+        CreatePaymentResponse response = strategy.createPayment(request);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals("R-1", response.receiptId());
+        assertEquals(95000.0, response.finalAmount());
+        
+        verify(promotionProvider, times(1)).applyPromotions("ORDER-1");
+        verify(receiptProvider, times(1)).createReceipt(any(Payment.class));
+    }
+}
+```
+
+---
+
+### 🖼️ Evidencias de ejecución
+
+1. **Consola mostrando pruebas ejecutándose exitosamente**
+
+    ![Evidencia consola pruebas](./docs/images/testConsola.png)
+
+2. **Reporte JaCoCo con cobertura de código**
+
+    ![Evidencia reporte JaCoCo](./docs/images/jacoco.png)
+
+---
+
+### ✅ Criterios de aceptación de pruebas
+
+Para considerar el sistema correctamente probado, se debe cumplir:
+
+- ✅ **Cobertura mínima del 80%** en servicios y lógica de negocio
+- ✅ **Todas las pruebas en estado PASSED** (sin fallos)
+- ✅ **Cero errores de compilación** en el código de pruebas
+- ✅ **Pruebas de casos felices y casos de error** implementadas
+
+---
+
+### 🔄 Integración con CI/CD
+
+Las pruebas se ejecutan automáticamente en cada **push** o **pull request** mediante GitHub Actions:
+
+```yaml
+  - name: Build + Test + Coverage
+    run: mvn -B clean verify
+```
+
+Esto garantiza que ningún cambio roto llegue a producción.
+
+---
+
+## 10. 🗂️ Código de la implementación organizado en las respectivas carpetas
+
+El microservicio de **Pagos de Amaterasu** sigue una **arquitectura hexagonal (puertos y adaptadores)** que separa las responsabilidades en capas bien definidas, promoviendo la escalabilidad, testabilidad y mantenibilidad del código.
+
+---
+
+### 📂 Estructura general del proyecto (Scaffolding)
+
+```
+Amaterasu-Payment-BackEnd/
+│
+├── 📁 src/
+│   ├── 📁 main/
+│   │   ├── 📁 java/ECIEXPRESS/AmaterasuPagos/Payment/BackEnd/
+│   │   │   ├── 📁 Application/                               # 🔵 CAPA DE APLICACIÓN
+│   │   │   │   ├── 📁 Dto/
+│   │   │   │   ├── 📁 Mappers/
+│   │   │   │   ├── 📁 Ports/
+│   │   │   │   └── 📁 Services/
+│   │   │   │
+│   │   │   ├── 📁 Config/                                    # ⚙️ Configuraciones
+│   │   │   │
+│   │   │   ├── 📁 Domain/                                    # 🟢 CAPA DE DOMINIO
+│   │   │   │   ├── 📁 Model/
+│   │   │   │   └── 📁 Ports/
+│   │   │   │
+│   │   │   ├── 📁 Exception/                                 # ⚠️ Manejo de errores
+│   │   │   │
+│   │   │   ├── 📁 Infrastructure/                            # 🟠 CAPA DE INFRAESTRUCTURA
+│   │   │   │   ├── 📁 Clients/
+│   │   │   │   └── 📁 Web/
+│   │   │   │
+│   │   │   └── 📁 Utils/                                     # 🛠️ Utilidades
+│   │   │
+│   │   └── 📁 resources/                                     # 📄 Archivos de configuración
+│   │
+│   └── 📁 test/                                              # 🧪 PRUEBAS
+│
+├── 📁 doc/                                                   # 📚 Documentación
+│
+├── 📄 Dockerfile
+├── 📄 docker-compose.yml
+├── 📄 pom.xml
+└── 📄 README.md
+```
+
+---
+
+> ℹ️ Todo el código fuente está documentado y comentado para facilitar su comprensión, mantenimiento y extensión por parte de cualquier desarrollador.
+
+### 🏛️ Arquitectura Hexagonal Implementada
+
+<div align="center">
+
+| 🎨 **Capa** | 📋 **Responsabilidad** | 🔗 **Dependencias** |
+|:-----------|:----------------------|:-------------------|
+| **🟢 Domain** | Lógica de negocio pura, entidades (`Payment`, `BankPayment`) y puertos (interfaces) | ❌ Ninguna (independiente) |
+| **🔵 Application** | Casos de uso, estrategias de pago (`CashPaymentStrategy`, `BankPaymentStrategy`) y validaciones | ✅ Solo `Domain` |
+| **🟠 Infrastructure** | Controladores REST, adaptadores de servicios externos (PayU, Billetera, Promociones, Recibos) | ✅ `Domain` + `Application` |
+
+</div>
+
+**Flujo de dependencias:** `Infrastructure → Application → Domain`
+
+---
+
+### 🎯 Principios de diseño aplicados
+
+<div align="center">
+
+| ✅ **Principio** | 📋 **Implementación** |
+|:----------------|:---------------------|
+| **Separación de responsabilidades** | Cada capa tiene un propósito único y bien definido |
+| **Inversión de dependencias** | Las capas externas dependen de interfaces definidas en el dominio |
+| **Independencia del framework** | La lógica de negocio no depende de Spring o MongoDB |
+| **Patrón Strategy** | Estrategias intercambiables para diferentes métodos de pago |
+| **Testabilidad** | Fácil crear pruebas unitarias mockeando puertos y adaptadores |
+| **Mantenibilidad** | Cambios en una capa no afectan a las demás |
+
+</div>  
+
+---
+
+## 11. 🚀 Ejecución del Proyecto
+
+### 📋 Prerrequisitos
+- **Java 17**
+- **Maven 3.8+**
+- **Docker** (Opcional)
+
+### 🛠️ Opción 1: Ejecución Local (Maven)
+
+```bash
+# 1. Clonar repositorio
+git clone https://github.com/ECIXPRESS/Amaterasu-Payment-BackEnd.git
+
+# 2. Ejecutar aplicación
+mvn spring-boot:run
+```
+📍 **URL Local:** `http://localhost:8085`  
+📚 **Documentación API:** `http://localhost:8085/swagger-ui.html`
+
+### 🐳 Opción 2: Ejecución con Docker
+
+```bash
+# Levantar el contenedor
+docker-compose up --build -d
+```
+
+### ⚙️ Configuración
+El servicio se conecta por defecto a los otros microservicios en `localhost`. Para cambiar esto, ajusta `application.yml` o usa variables de entorno.
+
+## 12. ☁️ CI/CD y Despliegue en Azure
+
+El proyecto implementa un **pipeline automatizado** con **GitHub Actions** para garantizar la calidad del código y el despliegue continuo en **Azure Cloud**.
+
+---
+
+### 🔗 Enlaces de Despliegue
+
+<div align="center">
+
+| 🌍 Ambiente | 🔗 URL | 📝 Estado |
+|:-----------|:-------|:---------|
+| **🟢 Producción** | [amaterasu-payment-prod-e4c5eecha5epb0h4.eastus2-01.azurewebsites.net/swagger-ui/index.html ](amaterasu-payment-prod-e4c5eecha5epb0h4.eastus2-01.azurewebsites.net/swagger-ui/index.html ) | ![Active](https://img.shields.io/badge/Status-Active-success?style=flat) |
+| **🟠 Desarrollo** | [amaterasu-payment-dev-fbfdd2bpe9axf3fg.eastus2-01.azurewebsites.net/swagger-ui/index.html ](amaterasu-payment-dev-fbfdd2bpe9axf3fg.eastus2-01.azurewebsites.net/swagger-ui/index.html ) | ![Active](https://img.shields.io/badge/Status-Active-success?style=flat) |
+
+</div>
+
+---
+
+### 🔄 Pipeline de Automatización
+
+El flujo de trabajo se divide en dos etapas principales:
+
+1. **Integración Continua (CI)**: Se ejecuta en cada *Pull Request*.
+   - Compilación del proyecto con Maven.
+   - Ejecución de pruebas unitarias y de integración.
+   - Análisis de calidad de código con **SonarQube**.
+   - Generación de reportes de cobertura con **JaCoCo**.
+
+2. **Despliegue Continuo (CD)**: Se ejecuta al hacer merge a ramas principales.
+   - Construcción de la imagen Docker.
+   - Publicación de la imagen en **Azure Container Registry (ACR)**.
+   - Despliegue automático en **Azure App Service**.
+     - `develop` ➔ Ambiente de Desarrollo.
+     - `main` ➔ Ambiente de Producción.
+
+---
+
+### ☁️ Infraestructura
+
+<div align="center">
+
+| Componente | Servicio Azure | Propósito |
+|:-----------|:---------------|:----------|
+| **Compute** | ![App Service](https://img.shields.io/badge/App_Service-0078D4?logo=microsoft-azure&logoColor=white) | Ejecución del contenedor Docker del microservicio. |
+| **Storage** | ![ACR](https://img.shields.io/badge/ACR-0078D4?logo=docker&logoColor=white) | Almacenamiento privado de imágenes Docker. |
+| **Database** | ![MongoDB](https://img.shields.io/badge/MongoDB_Atlas-47A248?logo=mongodb&logoColor=white) | Persistencia de datos transaccionales. |
+| **Monitoring** | ![Insights](https://img.shields.io/badge/App_Insights-5C2D91?logo=microsoft-azure&logoColor=white) | Logs, métricas y trazabilidad en tiempo real. |
+
+</div>
+
+---
+
+### 📊 Evidencias de Despliegue
+
+**Azure Web App - Aplicación en ejecución**
+
+<div align="center">
+  <img src="docs/images/AzureDev.png" alt="Evidencia Azure Dev" width="45%" />
+
+  <img src="docs/images/AzureProd.png" alt="Evidencia Azure Prod" width="45%" />
+</div>
+
+---
+
+## 13. 🤝 Contribuciones y Metodología
+
+El equipo **Amaterasu** aplicó la metodología **Scrum** con sprints semanales para garantizar una entrega incremental de valor y mejora continua.
+
+### 👥 Equipo Scrum
+
+| Rol | Responsabilidad |
+|:---|:---|
+| **Product Owner** | Priorización del Backlog y maximización de valor. |
+| **Scrum Master** | Facilitador del proceso y eliminación de impedimentos. |
+| **Developers** | Diseño, implementación y pruebas de funcionalidades. |
+
+### 🔄 Eventos y Artefactos
+
+- **Sprints Semanales**: Ciclos cortos de desarrollo.
+- **Daily Scrum**: Sincronización diaria (15 min).
+- **Sprint Review & Retrospective**: Demostración de incrementos y mejora de procesos.
+- **Backlogs**: Gestión de tareas en Jira/GitHub Projects.
+
+### 🎯 Valores del Equipo
+Compromiso, Coraje, Enfoque, Apertura y Respeto fueron los pilares para afrontar desafíos técnicos como la integración con pasarelas de pago.
+
+---
+
+<div align="center">
+
+### 🏆 Equipo **Amaterasu**
+
+![Team](https://img.shields.io/badge/Team-Amaterasu-blueviolet?style=for-the-badge&logo=github&logoColor=white)
+![Course](https://img.shields.io/badge/Course-DOSW-orange?style=for-the-badge)
+![Year](https://img.shields.io/badge/Year-2025--2-blue?style=for-the-badge)
+
+> 💡 **ECIEXPRESS - Microservicio de Pagos** es un proyecto académico, pero su arquitectura y calidad están pensadas para ser escalables y adaptables a escenarios reales en instituciones educativas.
+
+**🎓 Escuela Colombiana de Ingeniería Julio Garavito**
+
+</div>
+
+---
+
+
