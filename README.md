@@ -30,25 +30,25 @@
 
 ## 📑 Tabla de Contenidos
 
-1. [👤 Integrantes](#1--integrantes)
-2. [🎯 Objetivo del Microservicio](#2--objetivo-del-microservicio)
-3. [⚡ Funcionalidades Principales](#3--funcionalidades-principales)
-4. [📋 Estrategia de Versionamiento y Branches](#4--manejo-de-estrategia-de-versionamiento-y-branches)
-   - [4.1 Convenciones para crear ramas](#41-convenciones-para-crear-ramas)
-   - [4.2 Convenciones para crear commits](#42-convenciones-para-crear-commits)
-5. [⚙️ Tecnologías Utilizadas](#5--tecnologias-utilizadas)
-6. [🧩 Funcionalidad](#6--funcionalidades)
-7. [📊 Diagramas](#7--diagramas)
-8. [⚠️ Manejo de Errores](#8--manejo-de-errores)
-9. [🧪 Evidencia de Pruebas y Ejecución](#9--evidencia-de-las-pruebas-y-como-ejecutarlas)
-10. [🗂️ Organización del Código](#10--codigo-de-la-implementacion-organizado-en-las-respectivas-carpetas)
-11. [🚀 Ejecución del Proyecto](#11--ejecución-del-proyecto)
-12. [☁️ CI/CD y Despliegue en Azure](#12--cicd-y-despliegue-en-azure)
-13. [🤝 Contribuciones y Metodología](#13--contribuciones-y-metodologia)
+1. [Integrantes](#1--integrantes)
+2. [Objetivo del Microservicio](#2--objetivo-del-microservicio)
+3. [Funcionalidades Principales](#3--funcionalidades-principales)
+4. [Estrategia de Versionamiento y Branches](#4--manejo-de-estrategia-de-versionamiento-y-branches)
+  - [4.1 Convenciones para crear ramas](#41-convenciones-para-crear-ramas)
+  - [4.2 Convenciones para crear commits](#42-convenciones-para-crear-commits)
+5. [Tecnologías Utilizadas](#5--tecnologias-utilizadas)
+6. [Funcionalidad](#6--funcionalidades)
+7. [Diagramas](#7--diagramas)
+8. [Manejo de Errores](#8--manejo-de-errores)
+9. [Evidencia de Pruebas y Ejecución](#9--evidencia-de-las-pruebas-y-como-ejecutarlas)
+10. [Organización del Código](#10--codigo-de-la-implementacion-organizado-en-las-respectivas-carpetas)
+11. [Ejecución del Proyecto](#11--ejecución-del-proyecto)
+12. [CI/CD y Despliegue en Azure](#12--cicd-y-despliegue-en-azure)
+13. [Contribuciones y Metodología](#13--contribuciones-y-metodologia)
 
 ---
 
-## 1. 👤 Integrantes:
+## 1. Integrantes
 
 - Elizabeth Correa
 - Daniel Palacios
@@ -56,7 +56,7 @@
 - Tomas Ramirez
 - Carolina Cepeda
 
-## 2. 🎯 Objetivo del microservicio
+## 2. Objetivo del microservicio
 
 El microservicio de Pagos tiene como objetivo procesar de forma segura, eficiente y trazable todas las transacciones económicas dentro de ECIExpress, permitiendo a los usuarios pagar sus pedidos mediante efectivo, billetera virtual o medios bancarios. Este servicio centraliza la lógica financiera del sistema, aplicando promociones, validando métodos de pago, integrándose con gateways externos (como PayU) y generando la información necesaria para la emisión de comprobantes digitales.
 
@@ -64,7 +64,7 @@ Asimismo, garantiza la coherencia del flujo de compra colaborando con otros micr
 
 ---
 
-## 3. ⚡ Funcionalidades principales
+## 3. Funcionalidades principales
 
 <div align="center">
 
@@ -109,7 +109,7 @@ Asimismo, garantiza la coherencia del flujo de compra colaborando con otros micr
 
 </div>
 
-## 4. 📋 Manejo de Estrategia de versionamiento y branches
+## 4. Manejo de Estrategia de versionamiento y branches
 
 ### Estrategia de Ramas (Git Flow)
 
@@ -200,7 +200,7 @@ hotfix/[descripcion-breve-del-fix]
 - `docs`: Cambios en documentación
 
 
-## 5. ⚙️ Tecnologías Utilizadas
+## 5. Tecnologías Utilizadas
 
 > 🧠 **Stack tecnológico seleccionado** para asegurar **escalabilidad**, **modularidad**, **seguridad**, **trazabilidad** y **mantenibilidad**, aplicando buenas prácticas de ingeniería de software.
 
@@ -230,7 +230,7 @@ hotfix/[descripcion-breve-del-fix]
 
 
 
-## 6. 🧩 Funcionalidades
+## 6. Funcionalidades
 
 El backend de **ECIExpress** implementa un **sistema de gestión de pagos** que facilita la transacción económica entre usuarios y el sistema.
 
@@ -395,7 +395,7 @@ POST /api/v1/payments/ProcessPayment
 
 ---
 
-## 7. 📊 Diagramas
+## 7. Diagramas
 
 Esta sección muestra los diagramas clave del microservicio de pagos, ilustrando su arquitectura, componentes principales y despliegue.
 
@@ -632,7 +632,7 @@ El microservicio de Pagos separa controladores, casos de uso, lógica de negocio
 ---
 
 
-## 8. ⚠️ Manejo de Errores
+## 8. Manejo de Errores
 
 El backend de **ECIExpress** implementa un **mecanismo centralizado de manejo de errores** que garantiza uniformidad, claridad y seguridad en todas las respuestas enviadas al cliente cuando ocurre un fallo.
 
@@ -725,7 +725,7 @@ Esta es capturada por el **Global Exception Handler**, que devuelve una respuest
 
 ---
 
-## 9. 🧪 Evidencia de las pruebas y cómo ejecutarlas
+## 9. Evidencia de las pruebas y cómo ejecutarlas
 
 El backend de **ECIExpress** implementa una **estrategia integral de pruebas** que garantiza la calidad, funcionalidad y confiabilidad del código mediante pruebas unitarias y de integración.
 
@@ -873,7 +873,7 @@ Esto garantiza que ningún cambio roto llegue a producción.
 
 ---
 
-## 10. 🗂️ Código de la implementación organizado en las respectivas carpetas
+## 10. Código de la implementación organizado en las respectivas carpetas
 
 El microservicio de **Pagos de Amaterasu** sigue una **arquitectura hexagonal (puertos y adaptadores)** que separa las responsabilidades en capas bien definidas, promoviendo la escalabilidad, testabilidad y mantenibilidad del código.
 
@@ -956,7 +956,7 @@ Amaterasu-Payment-BackEnd/
 
 ---
 
-## 11. 🚀 Ejecución del Proyecto
+## 11. Ejecución del Proyecto
 
 ### 📋 Prerrequisitos
 - **Java 17**
@@ -985,7 +985,7 @@ docker-compose up --build -d
 ### ⚙️ Configuración
 El servicio se conecta por defecto a los otros microservicios en `localhost`. Para cambiar esto, ajusta `application.yml` o usa variables de entorno.
 
-## 12. ☁️ CI/CD y Despliegue en Azure
+## 12. CI/CD y Despliegue en Azure
 
 El proyecto implementa un **pipeline automatizado** con **GitHub Actions** para garantizar la calidad del código y el despliegue continuo en **Azure Cloud**.
 
@@ -1050,7 +1050,7 @@ El flujo de trabajo se divide en dos etapas principales:
 
 ---
 
-## 13. 🤝 Contribuciones y Metodología
+## 13. Contribuciones y Metodología
 
 El equipo **Amaterasu** aplicó la metodología **Scrum** con sprints semanales para garantizar una entrega incremental de valor y mejora continua.
 
