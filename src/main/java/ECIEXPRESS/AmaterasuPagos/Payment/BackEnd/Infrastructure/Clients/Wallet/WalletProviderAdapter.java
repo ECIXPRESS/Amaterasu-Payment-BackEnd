@@ -2,8 +2,8 @@ package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Wallet;
 
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.WalletProvider;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Wallet.Dto.WalletRequests.CreateWalletRequest;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Wallet.Dto.WalletResponses.CreateWalletResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Wallet.Dto.WalletRequests.PayWithWalletRequest;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Wallet.Dto.WalletResponses.PayWithWalletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,18 +25,18 @@ public class WalletProviderAdapter implements WalletProvider {
     private String basePath;
 
     @Override
-    public CreateWalletResponse processPayment(CreatePaymentRequest createPaymentRequest) {
+    public PayWithWalletResponse processPayment(CreatePaymentRequest createPaymentRequest) {
         try {
             log.info("Processing Receipt for order: {}", createPaymentRequest.orderId());
-            CreateWalletRequest createWalletRequest = mapToWalletRequest(createPaymentRequest);
+            PayWithWalletRequest payWithWalletRequest = mapToWalletRequest(createPaymentRequest);
 
             HttpHeaders headers = createHeaders();
-            HttpEntity<CreateWalletRequest> entity = new HttpEntity<>(createWalletRequest, headers);
+            HttpEntity<PayWithWalletRequest> entity = new HttpEntity<>(payWithWalletRequest, headers);
 
-            ResponseEntity<CreateWalletResponse> response = restTemplate.exchange(
-                    baseUrl+basePath, HttpMethod.POST, entity, CreateWalletResponse.class);
+            ResponseEntity<PayWithWalletResponse> response = restTemplate.exchange(
+                    baseUrl+basePath, HttpMethod.POST, entity, PayWithWalletResponse.class);
 
-            CreateWalletResponse walletResponse = response.getBody();
+            PayWithWalletResponse walletResponse = response.getBody();
 
             log.info("Request response received for order {}", createPaymentRequest.orderId());
 
@@ -44,12 +44,12 @@ public class WalletProviderAdapter implements WalletProvider {
 
         } catch (Exception e) {
             log.error("Error processing receipt for order {} Error: {}",createPaymentRequest.orderId(), e.getMessage());
-            return new CreateWalletResponse(null);
+            return new PayWithWalletResponse(null);
         }
     }
-    private CreateWalletRequest mapToWalletRequest(CreatePaymentRequest createPaymentRequest) {
+    private PayWithWalletRequest mapToWalletRequest(CreatePaymentRequest createPaymentRequest) {
 
-        return new CreateWalletRequest(
+        return new PayWithWalletRequest(
                 createPaymentRequest.clientId(),
                 createPaymentRequest.originalAmount());
     }

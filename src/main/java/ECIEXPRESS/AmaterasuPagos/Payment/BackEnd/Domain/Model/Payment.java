@@ -22,5 +22,4 @@ public abstract class Payment {
     private TimeStamps timeStamps;
     private List<String> appliedPromotions;
     public abstract Payment createPayment(Context context);
-
 }

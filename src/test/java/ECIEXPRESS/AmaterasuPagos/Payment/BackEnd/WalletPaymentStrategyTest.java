@@ -14,7 +14,7 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.ReceiptProvider;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.WalletProvider;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.PromotionResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Receipt.Dto.ReceiptResponses.CreateReceiptResponse;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Wallet.Dto.WalletResponses.CreateWalletResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Wallet.Dto.WalletResponses.PayWithWalletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,7 +51,7 @@ class WalletPaymentStrategyTest {
         when(promotionProvider.applyPromotions("ORDER-2")).thenReturn(promo);
 
         when(walletProvider.processPayment(any(CreatePaymentRequest.class)))
-                .thenReturn(new CreateWalletResponse(PaymentStatus.COMPLETED));
+                .thenReturn(new PayWithWalletResponse(PaymentStatus.COMPLETED));
 
         var receipt = new CreateReceiptResponse("R-2", "ORDER-2", "CLIENT-1","STORE-2", 70000.0, ReceiptStatus.PAYED, "QR-2");
         when(receiptProvider.createReceipt(any(Payment.class))).thenReturn(receipt);

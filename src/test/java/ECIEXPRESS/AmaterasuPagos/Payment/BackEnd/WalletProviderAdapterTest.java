@@ -5,7 +5,7 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Cash;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentMethodType;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentStatus;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Wallet.WalletProviderAdapter;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Wallet.Dto.WalletResponses.CreateWalletResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Wallet.Dto.WalletResponses.PayWithWalletResponse;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
@@ -53,7 +53,7 @@ class WalletProviderAdapterTest {
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .setBody(jsonResponse));
 
-        CreateWalletResponse response = walletProviderAdapter.processPayment(request);
+        PayWithWalletResponse response = walletProviderAdapter.processPayment(request);
 
         assertNotNull(response);
         assertEquals(PaymentStatus.COMPLETED, response.paymentStatus());
@@ -71,7 +71,7 @@ class WalletProviderAdapterTest {
                 .setResponseCode(500)
                 .setBody("error"));
 
-        CreateWalletResponse response = walletProviderAdapter.processPayment(request);
+        PayWithWalletResponse response = walletProviderAdapter.processPayment(request);
 
         assertNotNull(response);
         assertNull(response.paymentStatus());
