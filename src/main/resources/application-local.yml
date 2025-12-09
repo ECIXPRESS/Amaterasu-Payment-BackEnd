@@ -1,10 +1,10 @@
 microservices:
   receipt:
-    url: http://localhost:8081
-  promotion:
-    url: http://localhost:8083
-  wallet:
     url: http://localhost:8082
+  promotion:
+    url: http://localhost:8084
+  wallet:
+    url: http://localhost:8083
   bank-gateway:
     payu:
       base-url: https://sandbox.api.payulatam.com/payments-api/4.0/service.cgi
