@@ -199,8 +199,7 @@ hotfix/[descripcion-breve-del-fix]
 - `fix`: Corrección de errores
 - `docs`: Cambios en documentación
 
-
-> 🧠 **Stack tecnológico seleccionado** para asegurar **escalabilidad**, **modularidad**, **seguridad**, **trazabilidad** y **mantenibilidad**, aplicando buenas prácticas de ingeniería de software.
+## 5. ⚙️ Tecnologías Utilizadas
 
 
 | **Tecnología / Herramienta** | **Uso principal en el proyecto** |
@@ -226,6 +225,10 @@ hotfix/[descripcion-breve-del-fix]
 | **AWS API Gateway** | Punto de entrada único al backend que enruta las solicitudes del cliente al microservicio correspondiente (Pagos, Wallet, Recibos, QR, etc.). |
 | **AWS Lambda (Node.js)** | Funciones ligeras que actúan como lógica intermedia cuando se requiere preprocesar o adaptar solicitudes antes de enviarlas a los microservicios. |
 | **SSL / HTTPS** | Cifrado de la comunicación entre cliente, API Gateway y microservicios para garantizar la seguridad de la información. |
+
+> 🧠 **Stack tecnológico seleccionado** para asegurar **escalabilidad**, **modularidad**, **seguridad**, **trazabilidad** y **mantenibilidad**, aplicando buenas prácticas de ingeniería de software.
+
+---
 
 ## 6. 🧩 Funcionalidades
 
