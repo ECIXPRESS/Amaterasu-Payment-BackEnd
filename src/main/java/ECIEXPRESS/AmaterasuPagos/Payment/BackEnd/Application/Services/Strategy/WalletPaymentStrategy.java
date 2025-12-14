@@ -1,10 +1,8 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.Strategy;
 
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.Context;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.PaymentDto;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Mappers.ApplicationMapper;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.Context;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Payment;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.TimeStamps;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.WalletPayment;
@@ -14,32 +12,42 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.WalletProvider;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.ApplyPromotionResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Receipt.Dto.ReceiptResponses.CreateReceiptResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Wallet.Dto.WalletResponses.PayWithWalletResponse;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
-import static ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Mappers.ApplicationMapper.*;
+import static ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Mappers.ApplicationMapper.createBankPaymentDto;
+import static ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Mappers.ApplicationMapper.updatePaymentRequest;
 
-@AllArgsConstructor
- @NoArgsConstructor
 @Service
-public class WalletPaymentStrategy implements PaymentStrategy{
-    private PromotionProvider promotionProvider;
-    private WalletProvider walletProvider;
-    private ReceiptProvider receiptProvider;
+@RequiredArgsConstructor
+public class WalletPaymentStrategy implements PaymentStrategy {
+
+    private final PromotionProvider promotionProvider;
+    private final WalletProvider walletProvider;
+    private final ReceiptProvider receiptProvider;
+
     @Override
-    public CreatePaymentResponse createPayment(CreatePaymentRequest createPaymentRequest){
+    public CreatePaymentResponse createPayment(CreatePaymentRequest createPaymentRequest) {
         Payment payment = new WalletPayment();
+
         TimeStamps timeStamps = new TimeStamps();
         timeStamps.setCreatedAt(new Date().toString());
+
         ApplyPromotionResponse applyPromotionResponse = promotionProvider.applyPromotions(createPaymentRequest.orderId());
         createPaymentRequest = updatePaymentRequest(createPaymentRequest, applyPromotionResponse);
+
         PayWithWalletResponse payWithWalletResponse = walletProvider.processPayment(createPaymentRequest);
         timeStamps.setPaymentProcessedAt(new Date().toString());
+
+        // NOTE: This currently uses createBankPaymentDto in your codebase. If you have a
+        // createWalletPaymentDto mapper method, switch to it.
         PaymentDto paymentDto = createBankPaymentDto(createPaymentRequest, applyPromotionResponse, timeStamps);
         payment = payment.createPayment(new Context(paymentDto, null, null));
+
         CreateReceiptResponse receiptResponse = receiptProvider.createReceipt(payment);
         return ApplicationMapper.receiptResponseToPaymentResponse(receiptResponse);
     }

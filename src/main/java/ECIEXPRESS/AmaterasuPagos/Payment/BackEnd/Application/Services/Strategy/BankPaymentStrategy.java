@@ -1,45 +1,56 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.Strategy;
 
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.Context;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.PaymentDto;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Mappers.ApplicationMapper;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Dto.Context;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.ValidationService;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.*;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.BankPayment;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.BankValidationResult;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.GatewayResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Payment;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.TimeStamps;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.BankGatewayProvider;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.PromotionProvider;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.ReceiptProvider;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.ApplyPromotionResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Receipt.Dto.ReceiptResponses.CreateReceiptResponse;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
-import static ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Mappers.ApplicationMapper.*;
+import static ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Mappers.ApplicationMapper.createBankPaymentDto;
+import static ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Mappers.ApplicationMapper.updatePaymentRequest;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Service
-public class BankPaymentStrategy implements PaymentStrategy{
-    private PromotionProvider promotionProvider;
-    private BankGatewayProvider bankGatewayProvider;
-    private ValidationService validationService;
-    private ReceiptProvider receiptProvider;
+@RequiredArgsConstructor
+public class BankPaymentStrategy implements PaymentStrategy {
+
+    private final PromotionProvider promotionProvider;
+    private final BankGatewayProvider bankGatewayProvider;
+    private final ValidationService validationService;
+    private final ReceiptProvider receiptProvider;
+
     @Override
-    public CreatePaymentResponse createPayment(CreatePaymentRequest createPaymentRequest){
+    public CreatePaymentResponse createPayment(CreatePaymentRequest createPaymentRequest) {
         Payment payment = new BankPayment();
+
         TimeStamps timeStamps = new TimeStamps();
         timeStamps.setCreatedAt(new Date().toString());
+
         BankValidationResult bankValidationResult = validationService.createValidation(createPaymentRequest.bankDetails());
+
         ApplyPromotionResponse applyPromotionResponse = promotionProvider.applyPromotions(createPaymentRequest.orderId());
         createPaymentRequest = updatePaymentRequest(createPaymentRequest, applyPromotionResponse);
+
         GatewayResponse gatewayResponse = bankGatewayProvider.processPayment(createPaymentRequest);
         timeStamps.setPaymentProcessedAt(new Date().toString());
+
         PaymentDto paymentDto = createBankPaymentDto(createPaymentRequest, applyPromotionResponse, timeStamps);
         payment = payment.createPayment(new Context(paymentDto, gatewayResponse, bankValidationResult));
+
         CreateReceiptResponse receiptResponse = receiptProvider.createReceipt(payment);
         return ApplicationMapper.receiptResponseToPaymentResponse(receiptResponse);
     }
