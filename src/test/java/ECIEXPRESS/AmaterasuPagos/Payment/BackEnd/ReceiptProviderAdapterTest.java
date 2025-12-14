@@ -100,10 +100,10 @@ class ReceiptProviderAdapterTest {
         CreateReceiptResponse response = receiptProviderAdapter.createReceipt(payment);
 
         assertNotNull(response);
-        assertNull(response.receiptId());
-        assertNull(response.orderId());
-        assertNull(response.storeId());
-        assertEquals(0.0, response.finalAmount());
+        assertNull(response.receiptId());                     // still null
+        assertEquals("ORDER-301", response.orderId());       // keep original order
+        assertEquals("STORE-012", response.storeId());       // keep original store
+        assertEquals(100000.0, response.finalAmount());      // keep original amount
         assertNull(response.receiptStatus());
     }
 
