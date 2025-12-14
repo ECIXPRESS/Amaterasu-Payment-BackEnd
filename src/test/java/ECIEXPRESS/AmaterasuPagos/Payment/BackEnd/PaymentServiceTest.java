@@ -1,5 +1,8 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd;
 
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.Strategy.BankPaymentStrategy;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.Strategy.CashPaymentStrategy;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.Strategy.WalletPaymentStrategy;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.PaymentService;
@@ -24,13 +27,13 @@ import static org.mockito.Mockito.*;
 class PaymentServiceTest {
 
     @Mock
-    private PaymentStrategy bankPaymentStrategy;
+    private BankPaymentStrategy bankPaymentStrategy;
 
     @Mock
-    private PaymentStrategy cashPaymentStrategy;
+    private CashPaymentStrategy cashPaymentStrategy;
 
     @Mock
-    private PaymentStrategy walletPaymentStrategy;
+    private WalletPaymentStrategy walletPaymentStrategy;
 
     private PaymentService paymentService;
 
@@ -41,19 +44,11 @@ class PaymentServiceTest {
     @BeforeEach
     void setUp() {
 
-        paymentService = new PaymentService();
-        Map<PaymentMethodType, PaymentStrategy> mockStrategyMap = Map.of(
-                PaymentMethodType.BANK, bankPaymentStrategy,
-                PaymentMethodType.WALLET, walletPaymentStrategy,
-                PaymentMethodType.CASH, cashPaymentStrategy
+        paymentService = new PaymentService(
+                bankPaymentStrategy,
+                walletPaymentStrategy,
+                cashPaymentStrategy
         );
-        try {
-            Field field = PaymentService.class.getDeclaredField("strategyMap");
-            field.setAccessible(true);
-            field.set(paymentService, mockStrategyMap);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         // Crear requests de prueba
         BankDetails bankDetails = new BankDetails();
         bankDetails.setBankName("Bancolombia");
