@@ -9,7 +9,7 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.*;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.BankGatewayProvider;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.PromotionProvider;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.ReceiptProvider;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.PromotionResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.ApplyPromotionResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Receipt.Dto.ReceiptResponses.CreateReceiptResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Exception.BankValidationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,7 +60,7 @@ class BankPaymentStrategyTest {
         BankValidationResult validation = new BankValidationResult();
         when(validationService.createValidation(details)).thenReturn(validation);
 
-        var promo = new PromotionResponse(90000.0, List.of("PROMO-10"));
+        var promo = new ApplyPromotionResponse(90000.0, List.of("PROMO-10"));
         when(promotionProvider.applyPromotions("ORDER-3")).thenReturn(promo);
 
         GatewayResponse gatewayResponse = new GatewayResponse(

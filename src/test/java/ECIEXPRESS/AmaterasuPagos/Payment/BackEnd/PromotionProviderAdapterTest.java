@@ -1,6 +1,6 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd;
 
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.PromotionResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.ApplyPromotionResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.PromotionProviderAdapter;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -55,7 +54,7 @@ class PromotionProviderAdapterTest {
                 .setBody(jsonResponse));
 
         // When
-        PromotionResponse response = promotionProviderAdapter.applyPromotions(orderId);
+        ApplyPromotionResponse response = promotionProviderAdapter.applyPromotions(orderId);
 
         // Then
         assertNotNull(response);
@@ -74,7 +73,7 @@ class PromotionProviderAdapterTest {
                 .setBody("Server Error"));
 
         // When
-        PromotionResponse response = promotionProviderAdapter.applyPromotions(orderId);
+        ApplyPromotionResponse response = promotionProviderAdapter.applyPromotions(orderId);
 
         // Then
         assertNotNull(response);

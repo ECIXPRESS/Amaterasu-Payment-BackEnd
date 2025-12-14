@@ -11,7 +11,7 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentMetho
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentStatus;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.PromotionProvider;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.ReceiptProvider;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.PromotionResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.ApplyPromotionResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Receipt.Dto.ReceiptResponses.CreateReceiptResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ class CashPaymentStrategyTest {
         cash.setPaymentMethodType(PaymentMethodType.CASH);
         var request = new CreatePaymentRequest("ORDER-1", "CLIENT-1", "STORE-1", 100000.0, cash, null);
 
-        var promo = new PromotionResponse(95000.0, List.of("PROMO-5", "PROMO-10"));
+        var promo = new ApplyPromotionResponse(95000.0, List.of("PROMO-5", "PROMO-10"));
         when(promotionProvider.applyPromotions("ORDER-1")).thenReturn(promo);
 
             var receipt = new CreateReceiptResponse("R-1", "ORDER-1","CLIENT-1","STORE-1", 95000.0, ReceiptStatus.PENDING, "QR-1");

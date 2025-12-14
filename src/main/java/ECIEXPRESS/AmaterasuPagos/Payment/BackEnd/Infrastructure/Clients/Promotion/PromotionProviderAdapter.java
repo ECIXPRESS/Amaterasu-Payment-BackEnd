@@ -2,10 +2,8 @@ package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promoti
 
 
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.PromotionProvider;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.BankGateway.Dto.BankGatewayRequests.PayuPaymentRequest;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.BankGateway.Dto.BankGatewayResponses.PayuPaymentResponse;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionRequests.PromotionRequest;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.PromotionResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionRequests.ApplyPromotionRequest;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.ApplyPromotionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,26 +25,26 @@ public class PromotionProviderAdapter implements PromotionProvider {
     private String basePath;
 
     @Override
-    public PromotionResponse applyPromotions(String orderId) {
+    public ApplyPromotionResponse applyPromotions(String orderId) {
         try {
             log.info("Processing applicable promotions to: {}", orderId);
-            PromotionRequest promotionRequest = new PromotionRequest(orderId);
+            ApplyPromotionRequest applyPromotionRequest = new ApplyPromotionRequest(orderId);
 
             HttpHeaders headers = createHeaders();
-            HttpEntity<PromotionRequest> entity = new HttpEntity<>(promotionRequest, headers);
+            HttpEntity<ApplyPromotionRequest> entity = new HttpEntity<>(applyPromotionRequest, headers);
 
-            ResponseEntity<PromotionResponse> response = restTemplate.exchange(
-                    baseUrl+basePath, HttpMethod.POST, entity, PromotionResponse.class);
+            ResponseEntity<ApplyPromotionResponse> response = restTemplate.exchange(
+                    baseUrl+basePath, HttpMethod.POST, entity, ApplyPromotionResponse.class);
 
-            PromotionResponse promotionResponse = response.getBody();
+            ApplyPromotionResponse applyPromotionResponse = response.getBody();
 
             log.info("Promotion response received for order {}", orderId);
 
-            return promotionResponse;
+            return applyPromotionResponse;
 
         } catch (Exception e) {
             log.error("Error applying promotions for order {} Error: {}",orderId, e.getMessage());
-            return new PromotionResponse(0,null);
+            return new ApplyPromotionResponse(0,null);
         }
     }
     private HttpHeaders createHeaders() {

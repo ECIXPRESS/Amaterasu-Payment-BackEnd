@@ -5,42 +5,42 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentR
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentStatus;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.TimeStamps;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.PromotionResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.ApplyPromotionResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Receipt.Dto.ReceiptResponses.CreateReceiptResponse;
 
 public class ApplicationMapper {
-    public static PaymentDto createCashPaymentDto(CreatePaymentRequest createPaymentRequest, PromotionResponse promotionResponse, TimeStamps timeStamps){
+    public static PaymentDto createCashPaymentDto(CreatePaymentRequest createPaymentRequest, ApplyPromotionResponse applyPromotionResponse, TimeStamps timeStamps){
         return new PaymentDto(
                 createPaymentRequest.orderId(),
                 createPaymentRequest.clientId(),
                 createPaymentRequest.storeId(),
                 createPaymentRequest.originalAmount(),
-                promotionResponse.finalAmount(),
+                applyPromotionResponse.finalAmount(),
                 createPaymentRequest.paymentMethod(),
                 PaymentStatus.PENDING,
                 timeStamps,
-                promotionResponse.appliedPromotions());
+                applyPromotionResponse.appliedPromotions());
     }
 
-    public static PaymentDto createBankPaymentDto(CreatePaymentRequest createPaymentRequest, PromotionResponse promotionResponse, TimeStamps timeStamps){
+    public static PaymentDto createBankPaymentDto(CreatePaymentRequest createPaymentRequest, ApplyPromotionResponse applyPromotionResponse, TimeStamps timeStamps){
         return new PaymentDto(
                 createPaymentRequest.orderId(),
                 createPaymentRequest.clientId(),
                 createPaymentRequest.storeId(),
                 createPaymentRequest.originalAmount(),
-                promotionResponse.finalAmount(),
+                applyPromotionResponse.finalAmount(),
                 createPaymentRequest.paymentMethod(),
                 PaymentStatus.COMPLETED,
                 timeStamps,
-                promotionResponse.appliedPromotions());
+                applyPromotionResponse.appliedPromotions());
     }
 
-    public static CreatePaymentRequest updatePaymentRequest(CreatePaymentRequest createPaymentRequest, PromotionResponse promotionResponse){
+    public static CreatePaymentRequest updatePaymentRequest(CreatePaymentRequest createPaymentRequest, ApplyPromotionResponse applyPromotionResponse){
         return new CreatePaymentRequest(
                 createPaymentRequest.orderId(),
                 createPaymentRequest.clientId(),
                 createPaymentRequest.storeId(),
-                promotionResponse.finalAmount(),
+                applyPromotionResponse.finalAmount(),
                 createPaymentRequest.paymentMethod(),
                 createPaymentRequest.bankDetails());
     }
