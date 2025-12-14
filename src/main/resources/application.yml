@@ -34,18 +34,18 @@ springdoc:
 # Configuración de Microservicios Externos
 
 gateway:
-  url: http://gateway:8081/api
+  url: http://gateway:8081
 
 
 microservices:
   receipt:
-    base-path: /v1/receipts
+    base-path: /api/v1/receipts
 
   promotion:
-    base-path: /v1/promotions
+    base-path: /api/v1/promotions
 
   wallet:
-    base-path: /v1/wallet
+    base-path: /api/v1/wallet
 
   bank-gateway:
     payu:
