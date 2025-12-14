@@ -43,8 +43,6 @@ public class WalletPaymentStrategy implements PaymentStrategy {
         PayWithWalletResponse payWithWalletResponse = walletProvider.processPayment(createPaymentRequest);
         timeStamps.setPaymentProcessedAt(new Date().toString());
 
-        // NOTE: This currently uses createBankPaymentDto in your codebase. If you have a
-        // createWalletPaymentDto mapper method, switch to it.
         PaymentDto paymentDto = createBankPaymentDto(createPaymentRequest, applyPromotionResponse, timeStamps);
         payment = payment.createPayment(new Context(paymentDto, null, null));
 
