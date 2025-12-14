@@ -39,13 +39,13 @@ gateway:
 
 microservices:
   receipt:
-    base-path: /api/v1/receipts
+    base-path: /api/receipts
 
   promotion:
-    base-path: /api/v1/promotions
+    base-path: /api/promotions
 
   wallet:
-    base-path: /api/v1/wallet
+    base-path: /api/wallet
 
   bank-gateway:
     payu:
