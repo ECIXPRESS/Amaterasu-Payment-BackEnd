@@ -36,7 +36,6 @@ springdoc:
 gateway:
   url: http://gateway:8081
 
-
 microservices:
   receipt:
     base-path: /api/receipts
