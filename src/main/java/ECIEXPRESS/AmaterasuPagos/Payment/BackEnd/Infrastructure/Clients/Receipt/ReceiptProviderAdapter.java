@@ -24,7 +24,7 @@ public class ReceiptProviderAdapter implements ReceiptProvider {
 
     private final RestTemplate restTemplate;
 
-    @Value("${gateway.url:http://gateway:8081/api}")
+    @Value("${gateway.url:http://gateway:8081}")
     private String baseUrl;
 
     @Value("${microservices.receipt.base-path}")
