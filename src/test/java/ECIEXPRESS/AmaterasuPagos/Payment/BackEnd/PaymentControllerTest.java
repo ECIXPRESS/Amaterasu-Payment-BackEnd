@@ -51,7 +51,7 @@ class PaymentControllerTest {
         );
 
         CreatePaymentResponse response = new CreatePaymentResponse(
-                "RECEIPT-123", "ORDER-123", "STORE-789", 95000.0, null
+                "RECEIPT-123", "ORDER-123", "STORE-789", 95000.0, null, "QR_CODE"
         );
 
         when(paymentService.createPayment(any(CreatePaymentRequest.class))).thenReturn(response);

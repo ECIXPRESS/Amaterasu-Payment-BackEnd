@@ -51,6 +51,7 @@ public class ApplicationMapper {
                 receiptResponse.orderId(),
                 receiptResponse.storeId(),
                 receiptResponse.finalAmount(),
-                receiptResponse.receiptStatus());
+                receiptResponse.receiptStatus(),
+                receiptResponse.qrCode());
     }
 }

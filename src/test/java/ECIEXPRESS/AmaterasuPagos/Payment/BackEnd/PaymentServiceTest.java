@@ -98,7 +98,7 @@ class PaymentServiceTest {
     void createPayment_WithBankPayment_ShouldCallBankStrategy() {
         // Given
         CreatePaymentResponse expectedResponse = new CreatePaymentResponse(
-                "RECEIPT-123", "ORDER-123", "STORE-789", 100000.0, null
+                "RECEIPT-123", "ORDER-123", "STORE-789", 100000.0, null, "QR_CODE"
         );
         when(bankPaymentStrategy.createPayment(any())).thenReturn(expectedResponse);
 
@@ -116,7 +116,7 @@ class PaymentServiceTest {
     void createPayment_WithCashPayment_ShouldCallCashStrategy() {
         // Given
         CreatePaymentResponse expectedResponse = new CreatePaymentResponse(
-                "RECEIPT-124", "ORDER-124", "STORE-790", 50000.0, null
+                "RECEIPT-124", "ORDER-124", "STORE-790", 50000.0, null, "QR_CODE"
         );
         when(cashPaymentStrategy.createPayment(any())).thenReturn(expectedResponse);
 
@@ -134,7 +134,7 @@ class PaymentServiceTest {
     void createPayment_WithWalletPayment_ShouldCallWalletStrategy() {
         // Given
         CreatePaymentResponse expectedResponse = new CreatePaymentResponse(
-                "RECEIPT-125", "ORDER-125", "STORE-791", 75000.0, null
+                "RECEIPT-125", "ORDER-125", "STORE-791", 75000.0, null, "QR_CODE"
         );
         when(walletPaymentStrategy.createPayment(any())).thenReturn(expectedResponse);
 
