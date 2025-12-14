@@ -20,7 +20,7 @@ public class PromotionProviderAdapter implements PromotionProvider {
 
     private final RestTemplate restTemplate;
 
-    @Value("${microservices.promotion.url}")
+    @Value("${gateway.url:http://gateway:8081/api}")
     private String baseUrl;
 
     @Value("${microservices.promotion.base-path}")

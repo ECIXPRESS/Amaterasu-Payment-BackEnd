@@ -18,7 +18,7 @@ public class WalletProviderAdapter implements WalletProvider {
 
     private final RestTemplate restTemplate;
 
-    @Value("${microservices.wallet.url}")
+    @Value("${gateway.url:http://gateway:8081/api}")
     private String baseUrl;
 
     @Value("${microservices.wallet.base-path}")
