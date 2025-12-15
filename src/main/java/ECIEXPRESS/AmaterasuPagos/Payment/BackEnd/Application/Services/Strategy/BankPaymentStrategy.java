@@ -16,6 +16,7 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotio
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Receipt.Dto.ReceiptResponses.CreateReceiptResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +39,7 @@ public class BankPaymentStrategy implements PaymentStrategy {
         Payment payment = new BankPayment();
 
         TimeStamps timeStamps = new TimeStamps();
-        timeStamps.setCreatedAt(new Date().toString());
+        timeStamps.setCreatedAt(DateUtils.formatDate(new Date(), DateUtils.TIMESTAMP_FORMAT));
 
         BankValidationResult bankValidationResult = validationService.createValidation(createPaymentRequest.bankDetails());
 
@@ -46,7 +47,7 @@ public class BankPaymentStrategy implements PaymentStrategy {
         createPaymentRequest = updatePaymentRequest(createPaymentRequest, applyPromotionResponse);
 
         GatewayResponse gatewayResponse = bankGatewayProvider.processPayment(createPaymentRequest);
-        timeStamps.setPaymentProcessedAt(new Date().toString());
+        timeStamps.setPaymentProcessedAt(DateUtils.formatDate(new Date(), DateUtils.TIMESTAMP_FORMAT));
 
         PaymentDto paymentDto = createBankPaymentDto(createPaymentRequest, applyPromotionResponse, timeStamps);
         payment = payment.createPayment(new Context(paymentDto, gatewayResponse, bankValidationResult));

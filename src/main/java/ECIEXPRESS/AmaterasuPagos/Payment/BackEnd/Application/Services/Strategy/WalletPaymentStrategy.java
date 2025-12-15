@@ -14,6 +14,7 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Receipt.
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Wallet.Dto.WalletResponses.PayWithWalletResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,13 +36,13 @@ public class WalletPaymentStrategy implements PaymentStrategy {
         Payment payment = new WalletPayment();
 
         TimeStamps timeStamps = new TimeStamps();
-        timeStamps.setCreatedAt(new Date().toString());
+        timeStamps.setCreatedAt(DateUtils.formatDate(new Date(), DateUtils.TIMESTAMP_FORMAT));
 
         ApplyPromotionResponse applyPromotionResponse = promotionProvider.applyPromotions(createPaymentRequest.orderId());
         createPaymentRequest = updatePaymentRequest(createPaymentRequest, applyPromotionResponse);
 
         PayWithWalletResponse payWithWalletResponse = walletProvider.processPayment(createPaymentRequest);
-        timeStamps.setPaymentProcessedAt(new Date().toString());
+        timeStamps.setPaymentProcessedAt(DateUtils.formatDate(new Date(), DateUtils.TIMESTAMP_FORMAT));
 
         PaymentDto paymentDto = createBankPaymentDto(createPaymentRequest, applyPromotionResponse, timeStamps);
         payment = payment.createPayment(new Context(paymentDto, null, null));
