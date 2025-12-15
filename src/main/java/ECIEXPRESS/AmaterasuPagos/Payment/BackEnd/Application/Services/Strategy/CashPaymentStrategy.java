@@ -14,6 +14,7 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentR
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Utils.DateUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,6 +23,7 @@ import static ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Mappers.Appl
 import static ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Mappers.ApplicationMapper.updatePaymentRequest;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CashPaymentStrategy implements PaymentStrategy {
 
@@ -30,18 +32,27 @@ public class CashPaymentStrategy implements PaymentStrategy {
 
     @Override
     public CreatePaymentResponse createPayment(CreatePaymentRequest createPaymentRequest) {
+        final long startMs = System.currentTimeMillis();
+        final String orderId = createPaymentRequest.orderId();
+        log.info("Starting CASH payment flow: orderId={}", orderId);
+
         Payment payment = new CashPayment();
 
         TimeStamps timeStamps = new TimeStamps();
         timeStamps.setCreatedAt(DateUtils.formatDate(new Date(), DateUtils.TIMESTAMP_FORMAT));
 
         ApplyPromotionResponse applyPromotionResponse = promotionProvider.applyPromotions(createPaymentRequest.orderId());
+        log.info("Promotions service responded: orderId={}, applyPromotionResponse={}", orderId, applyPromotionResponse);
         createPaymentRequest = updatePaymentRequest(createPaymentRequest, applyPromotionResponse);
 
         PaymentDto paymentDto = createCashPaymentDto(createPaymentRequest, applyPromotionResponse, timeStamps);
         payment = payment.createPayment(new Context(paymentDto, null, null));
 
         CreateReceiptResponse receiptResponse = receiptProvider.createReceipt(payment);
+        log.info("Receipt created: orderId={}", orderId);
+        log.info("Payment flow completed: orderId={}, elapsedMs={}", orderId, System.currentTimeMillis() - startMs);
+
         return ApplicationMapper.receiptResponseToPaymentResponse(receiptResponse);
     }
 }
+

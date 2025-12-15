@@ -1,5 +1,6 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd;
 
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.ReceiptStatus;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.PaymentService;
@@ -11,6 +12,7 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentMetho
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.PaymentController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PaymentControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private MockMvc mvc;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -57,7 +59,7 @@ class PaymentControllerTest {
         when(paymentService.createPayment(any(CreatePaymentRequest.class))).thenReturn(response);
 
         // When & Then
-        mockMvc.perform(post("/api/v1/payments/ProcessPayment")
+        mvc.perform(post("/api/v1/payments/ProcessPayment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -75,9 +77,52 @@ class PaymentControllerTest {
         );
 
         // When & Then
-        mockMvc.perform(post("/api/v1/payments/ProcessPayment")
+        mvc.perform(post("/api/v1/payments/ProcessPayment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void processPayment_bank_returns201() throws Exception {
+        var response = new CreatePaymentResponse(
+                "receipt-1", "order-1001", "store-456", 65000.0, ReceiptStatus.PAYED, "qr"
+        );
+
+        Mockito.when(paymentService.createPayment(Mockito.any(CreatePaymentRequest.class)))
+                .thenReturn(response);
+
+        String body = """
+    {
+      "orderId":"order-1001",
+      "clientId":"client-123",
+      "storeId":"store-456",
+      "originalAmount":65000,
+      "paymentMethod":{
+        "type":"BANK",
+        "paymentMethodType":"BANK",
+        "bankPaymentType":"CREDIT_CARD",
+        "bankAccountType":"SAVINGS_ACCOUNT",
+        "bankName":"PAYU_SANDBOX"
+      },
+      "bankDetails":{
+        "bankName":"PAYU_SANDBOX",
+        "bankPaymentType":"CREDIT_CARD",
+        "bankAccountType":"SAVINGS_ACCOUNT",
+        "accountNumber":"4111111111111111",
+        "expiryDate":"05/30",
+        "cvv":"777",
+        "cardHolderName":"APPROVED",
+        "validationStatus":"PENDING_VALIDATION"
+      }
+    }
+    """;
+
+        mvc.perform(post("/api/v1/payments/ProcessPayment")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.orderId").value("order-1001"))
+                .andExpect(jsonPath("$.receiptStatus").value("PAYED"));
     }
 }

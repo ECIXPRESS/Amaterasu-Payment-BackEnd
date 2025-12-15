@@ -73,6 +73,10 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
 
     @Override
     public GatewayResponse processPayment(CreatePaymentRequest request) {
+        final long startMs = System.currentTimeMillis();
+        final String orderId = (request != null) ? request.orderId() : null;
+        log.info("PayU processPayment started: orderId={}, testMode={}, currency={}", orderId, testMode, currency);
+
         try {
             PayuPaymentRequest payuRequest = buildPayuRequest(request);
 
@@ -85,9 +89,14 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
                     entity,
                     PayuPaymentResponse.class
             );
-
-            return mapToGatewayResponse(response.getBody());
-
+            log.info("PayU response received: orderId={}, httpStatus={}, hasBody={}", orderId, response.getStatusCode(), response.getBody() != null);
+            GatewayResponse gatewayResponse = mapToGatewayResponse(response.getBody());
+            log.info("PayU processPayment completed: orderId={}, success={}, bankResponseCode={}, elapsedMs={}",
+                    orderId,
+                    gatewayResponse.isSuccess(),
+                    gatewayResponse.getBankResponseCode(),
+                    System.currentTimeMillis() - startMs);
+            return gatewayResponse;
         } catch (HttpClientErrorException e) {
             log.error("Client error when processing PayU payment: status={}, body={}",
                     e.getStatusCode(), safeBody(e.getResponseBodyAsString()), e);

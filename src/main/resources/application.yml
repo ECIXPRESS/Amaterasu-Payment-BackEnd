@@ -55,6 +55,9 @@ microservices:
       account-id: 512321
       currency: COP
       test-mode: true
+      notify-url: ""
+      installments-number: 1
+      include-iva: true
       timeout: 30000
 
 # Configuración de Resilience4j para Circuit Breaker
