@@ -1,21 +1,38 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.BankGateway;
 
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.BankDetails;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.GatewayResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.BankPaymentType;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.BankResponseCode;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.GatewayResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.BankGatewayProvider;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.BankGateway.Dto.BankGatewayRequests.PayuPaymentRequest;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.BankGateway.Dto.BankGatewayResponses.PayuPaymentResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.HashMap;
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.HexFormat;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -24,7 +41,7 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
 
     private final RestTemplate restTemplate;
 
-    @Value("${microservices.bank-gateway.payu.base-url}")
+    @Value("${microservices.bank-gateway.payu.base-url:https://sandbox.api.payulatam.com/payments-api/4.0/service.cgi}")
     private String baseUrl;
 
     @Value("${microservices.bank-gateway.payu.api-login}")
@@ -43,195 +60,352 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
     private String currency;
 
     @Value("${microservices.bank-gateway.payu.test-mode:true}")
-    private Boolean testMode;
+    private boolean testMode;
+
+    @Value("${microservices.bank-gateway.payu.notify-url:}")
+    private String notifyUrl;
+
+    @Value("${microservices.bank-gateway.payu.installments-number:1}")
+    private int installmentsNumber;
+
+    @Value("${microservices.bank-gateway.payu.include-iva:true}")
+    private boolean includeIva;
 
     @Override
-    public GatewayResponse processPayment(CreatePaymentRequest createPaymentRequest) {
+    public GatewayResponse processPayment(CreatePaymentRequest request) {
         try {
-            log.info("Processing payment with PayU Colombia for order: {}", createPaymentRequest.orderId());
-
-            PayuPaymentRequest payuRequest = buildPayuRequest(createPaymentRequest);
+            PayuPaymentRequest payuRequest = buildPayuRequest(request);
 
             HttpHeaders headers = createHeaders();
             HttpEntity<PayuPaymentRequest> entity = new HttpEntity<>(payuRequest, headers);
 
             ResponseEntity<PayuPaymentResponse> response = restTemplate.exchange(
-                    baseUrl, HttpMethod.POST, entity, PayuPaymentResponse.class);
+                    baseUrl,
+                    HttpMethod.POST,
+                    entity,
+                    PayuPaymentResponse.class
+            );
 
-            PayuPaymentResponse payuResponse = response.getBody();
+            return mapToGatewayResponse(response.getBody());
 
-            log.info("PayU response received for order {}: State: {}",
-                    createPaymentRequest.orderId(),
-                    payuResponse != null && payuResponse.getTransactionResponse() != null ?
-                            payuResponse.getTransactionResponse().getState() : "null");
-
-            return mapToGatewayResponse(payuResponse, createPaymentRequest.originalAmount());
-
+        } catch (HttpClientErrorException e) {
+            log.error("Client error when processing PayU payment: status={}, body={}",
+                    e.getStatusCode(), safeBody(e.getResponseBodyAsString()), e);
+            return createErrorResponse(BankResponseCode.INVALID_REQUEST, e.getMessage());
+        } catch (HttpServerErrorException e) {
+            log.error("Server error when processing PayU payment: status={}, body={}",
+                    e.getStatusCode(), safeBody(e.getResponseBodyAsString()), e);
+            return createErrorResponse(BankResponseCode.BANK_ERROR, e.getMessage());
+        } catch (ResourceAccessException e) {
+            log.error("Timeout/network error when processing PayU payment: {}", e.getMessage(), e);
+            return createErrorResponse(BankResponseCode.TIMEOUT, "Connection error to PayU: " + e.getMessage());
         } catch (Exception e) {
-            log.error("Error processing payment with PayU for order {}: {}",
-                    createPaymentRequest.orderId(), e.getMessage());
-            return createErrorResponse("PAYU_PROCESSING_ERROR", e.getMessage());
+            log.error("Unexpected error when processing PayU payment", e);
+            return createErrorResponse(BankResponseCode.UNKNOWN_ERROR, e.getMessage());
         }
     }
 
     private PayuPaymentRequest buildPayuRequest(CreatePaymentRequest request) {
+        BigDecimal txValue = toCopAmount(request.originalAmount());
+
+        String referenceCode = request.orderId();
+        String signature = generateSignature(referenceCode, txValue);
+
+        BankDetails bank = request.bankDetails();
+        validateSupportedBankPaymentType(bank);
+
+        String paymentMethod = resolvePayuPaymentMethod(bank);
+
+        ClientContext clientContext = resolveClientContext();
+
+        PayuPaymentRequest.Merchant merchant = PayuPaymentRequest.Merchant.builder()
+                .apiLogin(apiLogin)
+                .apiKey(apiKey)
+                .build();
+
+        PayuPaymentRequest.Address shippingAddress = PayuPaymentRequest.Address.builder()
+                .street1("Calle 123")
+                .city("Bogotá")
+                .state("Cundinamarca")
+                .country("CO")
+                .postalCode("110111")
+                .phone("3000000000")
+                .build();
+
+        // NOTE: PayU requires real buyer/payer data (full name, email, phone, dni, address).
+        // If you do not have these in this microservice, fetch them from your user/profile service
+        // or extend CreatePaymentRequest to receive them from the caller.
+        String buyerFullName = bank.getCardHolderName() != null ? bank.getCardHolderName() : request.clientId();
+        String buyerEmail = sanitizeEmailFallback(request.clientId());
+
+        PayuPaymentRequest.Buyer buyer = PayuPaymentRequest.Buyer.builder()
+                .merchantBuyerId(request.clientId())
+                .fullName(buyerFullName)
+                .emailAddress(buyerEmail)
+                .contactPhone("3000000000")
+                .dniNumber("12345678")
+                .shippingAddress(shippingAddress)
+                .build();
+
+        PayuPaymentRequest.Payer payer = PayuPaymentRequest.Payer.builder()
+                .merchantPayerId(request.clientId())
+                .fullName(buyerFullName)
+                .emailAddress(buyerEmail)
+                .contactPhone("3000000000")
+                .dniNumber("12345678")
+                .billingAddress(shippingAddress)
+                .build();
+
+        PayuPaymentRequest.Order.OrderBuilder orderBuilder = PayuPaymentRequest.Order.builder()
+                .accountId(accountId)
+                .referenceCode(referenceCode)
+                .description("Payment for order " + referenceCode)
+                .language("es")
+                .signature(signature)
+                .buyer(buyer)
+                .additionalValues(buildAdditionalValues(txValue));
+
+        if (notifyUrl != null && !notifyUrl.isBlank()) {
+            orderBuilder.notifyUrl(notifyUrl);
+        }
+
+        PayuPaymentRequest.Order order = orderBuilder.build();
+
+        PayuPaymentRequest.Transaction.TransactionBuilder txBuilder = PayuPaymentRequest.Transaction.builder()
+                .order(order)
+                .type("AUTHORIZATION_AND_CAPTURE")
+                .paymentMethod(paymentMethod)
+                .paymentCountry("CO")
+                .payer(payer)
+                .deviceSessionId(clientContext.deviceSessionId())
+                .ipAddress(clientContext.ipAddress())
+                .cookie(clientContext.cookie())
+                .userAgent(clientContext.userAgent())
+                .extraParameters(Map.of("INSTALLMENTS_NUMBER", Math.max(1, installmentsNumber)));
+
+        boolean isDebit = bank.getBankPaymentType() == BankPaymentType.DEBIT_CARD;
+
+        if (isDebit) {
+            txBuilder.debitCard(PayuPaymentRequest.DebitCard.builder()
+                    .number(bank.getAccountNumber())
+                    .securityCode(bank.getCvv())
+                    .expirationDate(formatExpiryDate(bank.getExpiryDate()))
+                    .name(buyerFullName)
+                    .processWithoutCvv2(false)
+                    .build());
+        } else {
+            txBuilder.creditCard(PayuPaymentRequest.CreditCard.builder()
+                    .number(bank.getAccountNumber())
+                    .securityCode(bank.getCvv())
+                    .expirationDate(formatExpiryDate(bank.getExpiryDate()))
+                    .name(buyerFullName)
+                    .processWithoutCvv2(false)
+                    .build());
+        }
+
         return PayuPaymentRequest.builder()
                 .language("es")
                 .command("SUBMIT_TRANSACTION")
                 .test(testMode)
-                .merchant(PayuPaymentRequest.Merchant.builder()
-                        .apiLogin(apiLogin)
-                        .apiKey(apiKey)
-                        .build())
-                .transaction(PayuPaymentRequest.Transaction.builder()
-                        .order(PayuPaymentRequest.Transaction.Order.builder()
-                                .accountId(accountId)
-                                .referenceCode(request.orderId())
-                                .description("Payment for order " + request.orderId())
-                                .language("es")
-                                .notifyUrl("http://localhost:8080/Payment/webhook/payu")
-                                .additionalValues(buildAdditionalValues(request.originalAmount()))
-                                .buyer(buildBuyer(request))
-                                .signature(generateSignature(request))
-                                .build())
-                        .creditCard(buildCreditCard(request.bankDetails()))
-                        .type("AUTHORIZATION_AND_CAPTURE")
-                        .paymentMethod(request.bankDetails().getBankPaymentType().toString())
-                        .paymentCountry("CO")
-                        .payer(buildPayer(request))
-                        .build())
+                .merchant(merchant)
+                .transaction(txBuilder.build())
                 .build();
     }
 
-    private Map<String, PayuPaymentRequest.Amount> buildAdditionalValues(Double amount) {
-        Map<String, PayuPaymentRequest.Amount> additionalValues = new HashMap<>();
+    private void validateSupportedBankPaymentType(BankDetails bank) {
+        if (bank == null || bank.getBankPaymentType() == null) {
+            throw new IllegalArgumentException("bankPaymentType is required to process a PayU payment");
+        }
 
-        additionalValues.put("TX_VALUE", PayuPaymentRequest.Amount.builder()
-                .value(String.format("%.0f", amount))
-                .currency(currency)
-                .build());
-
-        additionalValues.put("TX_TAX", PayuPaymentRequest.Amount.builder()
-                .value(String.format("%.0f", amount * 0.19))
-                .currency(currency)
-                .build());
-
-        additionalValues.put("TX_TAX_RETURN_BASE", PayuPaymentRequest.Amount.builder()
-                .value(String.format("%.0f", amount))
-                .currency(currency)
-                .build());
-
-        return additionalValues;
+        // This adapter currently supports card payments only.
+        if (bank.getBankPaymentType() == BankPaymentType.PSE || bank.getBankPaymentType() == BankPaymentType.APP) {
+            throw new IllegalArgumentException("BankPaymentType " + bank.getBankPaymentType() + " is not implemented in PayuBankGatewayAdapter yet");
+        }
     }
 
-    private PayuPaymentRequest.Transaction.CreditCard buildCreditCard(BankDetails bankDetails) {
-        return PayuPaymentRequest.Transaction.CreditCard.builder()
-                .number(bankDetails.getAccountNumber())
-                .securityCode(bankDetails.getCvv())
-                .expirationDate(formatExpiryDate(bankDetails.getExpiryDate()))
-                .name(bankDetails.getCardHolderName())
-                .processWithoutCvv2(false)
-                .build();
+    private Map<String, PayuPaymentRequest.AdditionalValue> buildAdditionalValues(BigDecimal totalAmount) {
+        BigDecimal txValue = totalAmount.stripTrailingZeros(); // must be integer for COP
+
+        BigDecimal tax;
+        BigDecimal taxBase;
+
+        if (!includeIva) {
+            tax = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+            taxBase = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+        } else {
+            // Assume totalAmount includes IVA (19%). Base = total / 1.19 ; Tax = total - base
+            taxBase = totalAmount.divide(new BigDecimal("1.19"), 2, RoundingMode.HALF_UP);
+            tax = totalAmount.subtract(taxBase).setScale(2, RoundingMode.HALF_UP);
+        }
+
+        return Map.of(
+                "TX_VALUE", PayuPaymentRequest.AdditionalValue.builder()
+                        .value(txValue.setScale(0, RoundingMode.UNNECESSARY))
+                        .currency(currency)
+                        .build(),
+                "TX_TAX", PayuPaymentRequest.AdditionalValue.builder()
+                        .value(tax)
+                        .currency(currency)
+                        .build(),
+                "TX_TAX_RETURN_BASE", PayuPaymentRequest.AdditionalValue.builder()
+                        .value(taxBase)
+                        .currency(currency)
+                        .build()
+        );
     }
 
-    private PayuPaymentRequest.Transaction.Buyer buildBuyer(CreatePaymentRequest request) {
-        return PayuPaymentRequest.Transaction.Buyer.builder()
-                .merchantBuyerId(request.clientId())
-                .fullName("Customer " + request.clientId())
-                .emailAddress(request.clientId() + "@eciexpress.com")
-                .contactPhone("573001234567")
-                .dniNumber("123456789")
-                .shippingAddress(PayuPaymentRequest.Transaction.ShippingAddress.builder()
-                        .street1("Calle 123")
-                        .city("Bogotá")
-                        .state("Bogotá D.C.")
-                        .country("CO")
-                        .postalCode("110111")
-                        .phone("573001234567")
-                        .build())
-                .build();
+    /**
+     * PayU signature format (MD5/SHA): ApiKey~merchantId~referenceCode~tx_value~currency
+     */
+    private String generateSignature(String referenceCode, BigDecimal txValue) {
+        String value = txValue.stripTrailingZeros().toPlainString();
+        String raw = apiKey + "~" + merchantId + "~" + referenceCode + "~" + value + "~" + currency;
+        return md5Hex(raw);
     }
 
-    private PayuPaymentRequest.Transaction.Payer buildPayer(CreatePaymentRequest request) {
-        return PayuPaymentRequest.Transaction.Payer.builder()
-                .emailAddress(request.clientId() + "@eciexpress.com")
-                .fullName("Customer " + request.clientId())
-                .contactPhone("573001234567")
-                .dniNumber("123456789")
-                .billingAddress(PayuPaymentRequest.Transaction.BillingAddress.builder()
-                        .street1("Calle 123")
-                        .city("Bogotá")
-                        .state("Bogotá D.C.")
-                        .country("CO")
-                        .postalCode("110111")
-                        .phone("573001234567")
-                        .build())
-                .build();
+    private String resolvePayuPaymentMethod(BankDetails bank) {
+        String pan = bank.getAccountNumber();
+        if (pan == null || pan.isBlank()) {
+            throw new IllegalArgumentException("bankDetails.accountNumber (PAN) is required");
+        }
+
+        String brand = inferCardBrand(pan);
+
+        if (bank.getBankPaymentType() == BankPaymentType.DEBIT_CARD) {
+            // For Colombia, VISA debit uses VISA_DEBIT; Mastercard debit uses MASTERCARD (per PayU payment methods list).
+            if ("VISA".equals(brand)) {
+                return "VISA_DEBIT";
+            }
+        }
+        return brand;
+    }
+
+    private String inferCardBrand(String pan) {
+        String digits = pan.replaceAll("\\s+", "");
+        if (digits.startsWith("4")) {
+            return "VISA";
+        }
+        if (digits.matches("^5[1-5].*")) {
+            return "MASTERCARD";
+        }
+        if (digits.matches("^3[47].*")) {
+            return "AMEX";
+        }
+        if (digits.matches("^(30[0-5]|36|38).*")) {
+            return "DINERS";
+        }
+        // Codensa etc would be specific BIN ranges; add here if needed.
+        throw new IllegalArgumentException("Unsupported/unknown card brand for PAN prefix: " + digits.substring(0, Math.min(6, digits.length())));
+    }
+
+    private BigDecimal toCopAmount(double amount) {
+        BigDecimal bd = BigDecimal.valueOf(amount).stripTrailingZeros();
+        // PayU Colombia requires TX_VALUE without decimals
+        if (bd.scale() > 0) {
+            throw new IllegalArgumentException("COP amount must not include decimals. Received: " + amount);
+        }
+        return bd.setScale(0, RoundingMode.UNNECESSARY);
+    }
+
+    private ClientContext resolveClientContext() {
+        try {
+            ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            if (attrs == null) {
+                return ClientContext.fallback();
+            }
+
+            HttpServletRequest req = attrs.getRequest();
+
+            String ip = extractClientIp(req);
+
+            String userAgent = firstNonBlank(req.getHeader("User-Agent"), "Unknown");
+            String cookie = firstNonBlank(req.getHeader("Cookie"), "");
+
+            String deviceSessionId = firstNonBlank(
+                    req.getHeader("X-Device-Session-Id"),
+                    req.getParameter("deviceSessionId")
+            );
+
+            if (deviceSessionId == null || deviceSessionId.isBlank()) {
+                String sessionId = null;
+                if (req.getSession(false) != null) {
+                    sessionId = req.getSession(false).getId();
+                }
+                if (sessionId == null) {
+                    sessionId = UUID.randomUUID().toString();
+                }
+                deviceSessionId = md5Hex(sessionId + System.currentTimeMillis());
+            }
+
+            return new ClientContext(deviceSessionId, ip, cookie, userAgent);
+
+        } catch (Exception e) {
+            log.warn("Could not resolve client context for PayU anti-fraud fields: {}", e.getMessage());
+            return ClientContext.fallback();
+        }
+    }
+
+    private String extractClientIp(HttpServletRequest req) {
+        String xff = req.getHeader("X-Forwarded-For");
+        if (xff != null && !xff.isBlank()) {
+            return xff.split(",")[0].trim();
+        }
+        String xrip = req.getHeader("X-Real-IP");
+        if (xrip != null && !xrip.isBlank()) {
+            return xrip.trim();
+        }
+        return req.getRemoteAddr() != null ? req.getRemoteAddr() : "127.0.0.1";
+    }
+
+    private String firstNonBlank(String value, String fallback) {
+        return (value != null && !value.isBlank()) ? value : fallback;
+    }
+
+    private String safeBody(String body) {
+        if (body == null) return "";
+        return body.length() > 1000 ? body.substring(0, 1000) + "..." : body;
+    }
+
+    private String md5Hex(String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] digest = md.digest(input.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(digest);
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to compute MD5 signature", e);
+        }
     }
 
     private String formatExpiryDate(String expiryDate) {
-        if (expiryDate != null && expiryDate.contains("/")) {
-            String[] parts = expiryDate.split("/");
-            if (parts.length == 2) {
-                return "20" + parts[1] + "/" + parts[0];
-            }
+        if (expiryDate == null || expiryDate.isBlank()) {
+            throw new IllegalArgumentException("Card expiryDate is required");
         }
-        return "2025/12";
-    }
+        String exp = expiryDate.trim();
 
-    private String generateSignature(CreatePaymentRequest request) {
-        return String.format("%s~%s~%s~%.0f~%s",
-                apiKey, merchantId, request.orderId(), request.originalAmount(), currency);
-        //return "test-signature";
-    }
-
-    private GatewayResponse mapToGatewayResponse(PayuPaymentResponse payuResponse, double amount) {
-        GatewayResponse response = new GatewayResponse();
-
-        if (payuResponse != null && payuResponse.getTransactionResponse() != null) {
-            PayuPaymentResponse.PayuTransactionResponse tx = payuResponse.getTransactionResponse();
-
-            response.setSuccess("APPROVED".equals(tx.getState()));
-            response.setBankReceiptNumber(tx.getTransactionId());
-            response.setAuthorizationNumber(tx.getAuthorizationCode());
-            response.setGatewayMessage(tx.getResponseMessage());
-            response.setResponseCode(tx.getResponseCode());
-            response.setBankResponseCode(mapToBankResponseCode(tx.getState()));
-            response.setProcessedAmount(amount);
-            response.setCurrency(currency);
-        } else {
-            response.setSuccess(false);
-            response.setGatewayMessage(payuResponse != null ? payuResponse.getError() : "No response from PayU");
-            response.setResponseCode("500");
-            response.setBankResponseCode(BankResponseCode.BANK_UNAVAILABLE);
+        // Already in PayU format YYYY/MM
+        if (exp.matches("\\d{4}/\\d{2}")) {
+            return exp;
         }
-        return response;
-    }
 
-    private BankResponseCode mapToBankResponseCode(String payuState) {
-        if (payuState == null) return BankResponseCode.BANK_UNAVAILABLE;
-
-        switch (payuState) {
-            case "APPROVED":
-                return BankResponseCode.APPROVED;
-            case "DECLINED":
-                return BankResponseCode.DECLINED;
-            case "EXPIRED":
-                return BankResponseCode.EXPIRED_CARD;
-            case "PENDING":
-                return BankResponseCode.TIMEOUT;
-            default:
-                return BankResponseCode.BANK_UNAVAILABLE;
+        // MM/YY
+        if (exp.matches("\\d{2}/\\d{2}")) {
+            String[] parts = exp.split("/");
+            return "20" + parts[1] + "/" + parts[0];
         }
-    }
 
-    private GatewayResponse createErrorResponse(String errorCode, String errorMessage) {
-        GatewayResponse response = new GatewayResponse();
-        response.setSuccess(false);
-        response.setGatewayMessage(errorMessage);
-        response.setResponseCode(errorCode);
-        response.setBankResponseCode(BankResponseCode.BANK_UNAVAILABLE);
-        return response;
+        // MM/YYYY
+        if (exp.matches("\\d{2}/\\d{4}")) {
+            String[] parts = exp.split("/");
+            return parts[1] + "/" + parts[0];
+        }
+
+        // YYYY-MM
+        if (exp.matches("\\d{4}-\\d{2}")) {
+            String[] parts = exp.split("-");
+            return parts[0] + "/" + parts[1];
+        }
+
+        throw new IllegalArgumentException("Invalid expiryDate format. Expected MM/YY, MM/YYYY, or YYYY/MM. Received: " + expiryDate);
     }
 
     private HttpHeaders createHeaders() {
@@ -239,5 +413,121 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
         return headers;
+    }
+
+    private GatewayResponse mapToGatewayResponse(PayuPaymentResponse payuResponse) {
+        if (payuResponse == null || payuResponse.getTransactionResponse() == null) {
+            return createErrorResponse(BankResponseCode.ERROR, "No response from PayU");
+        }
+
+        PayuPaymentResponse.PayuTransactionResponse tx = payuResponse.getTransactionResponse();
+
+        GatewayResponse response = new GatewayResponse();
+        response.setSuccess("APPROVED".equalsIgnoreCase(tx.getState()));
+
+        // IDs
+        response.setBankReceiptNumber(tx.getTransactionId());
+        response.setAuthorizationNumber(tx.getAuthorizationCode());
+
+        // Mensaje + código PayU
+        String msg = firstNonBlank(
+                tx.getResponseMessage(),
+                tx.getPaymentNetworkResponseErrorMessage(),
+                tx.getPendingReason(),
+                tx.getErrorCode()
+        );
+        response.setGatewayMessage(msg);
+
+        String payuCode = firstNonBlank(tx.getResponseCode(), tx.getErrorCode(), tx.getState());
+        response.setResponseCode(payuCode);
+
+        // Tu mapeo a enum interno (ajusta la firma según tu implementación actual)
+        response.setBankResponseCode(
+                mapToBankResponseCode(tx.getResponseCode(), tx.getState())
+        );
+
+        // Monto / moneda (si viene en additionalInfo)
+        if (tx.getAdditionalInfo() != null
+                && tx.getAdditionalInfo().getPayments() != null
+                && !tx.getAdditionalInfo().getPayments().isEmpty()) {
+
+            PayuPaymentResponse.PayuPayment p = tx.getAdditionalInfo().getPayments().get(0);
+
+            response.setCurrency(p.getCurrency());
+            response.setProcessedAmount(safeParseDouble(p.getAmount()));
+        } else {
+            response.setCurrency("COP");
+            response.setProcessedAmount(0.0);
+        }
+
+        return response;
+    }
+
+    private static String firstNonBlank(String... values) {
+        for (String v : values) {
+            if (v != null && !v.isBlank()) return v;
+        }
+        return "";
+    }
+
+    private static double safeParseDouble(String raw) {
+        if (raw == null || raw.isBlank()) return 0.0;
+        try {
+            return Double.parseDouble(raw.trim());
+        } catch (Exception ignored) {
+            return 0.0;
+        }
+    }
+
+    private BankResponseCode mapToBankResponseCode(String payuResponseCode, String state) {
+        if ("APPROVED".equalsIgnoreCase(state)) {
+            return BankResponseCode.APPROVED;
+        }
+        if ("PENDING".equalsIgnoreCase(state)) {
+            return BankResponseCode.PENDING;
+        }
+        if ("DECLINED".equalsIgnoreCase(state)) {
+            return switch (payuResponseCode) {
+                case "INSUFFICIENT_FUNDS" -> BankResponseCode.INSUFFICIENT_FUNDS;
+                case "INVALID_CARD" -> BankResponseCode.INVALID_CARD;
+                case "EXPIRED" -> BankResponseCode.EXPIRED_CARD;
+                default -> BankResponseCode.DECLINED;
+            };
+        }
+        return BankResponseCode.UNKNOWN_ERROR;
+    }
+
+    private GatewayResponse createErrorResponse(BankResponseCode code, String message) {
+        GatewayResponse response = new GatewayResponse();
+        response.setSuccess(false);
+        response.setBankResponseCode(code);
+        response.setGatewayMessage(message);
+        response.setResponseCode(code.name());   // o "ERROR" si prefieres
+        response.setProcessedAmount(0.0);
+        response.setCurrency("COP");             // si siempre trabajas COP
+        return response;
+    }
+
+    private String sanitizeEmailFallback(String clientId) {
+        // Keep existing behavior but ensure valid email local-part characters
+        String safe = clientId == null ? "unknown" : clientId.replaceAll("[^A-Za-z0-9._%+-]", "");
+        if (safe.isBlank()) safe = "unknown";
+        return safe + "@example.com";
+    }
+
+    private record ClientContext(String deviceSessionId, String ipAddress, String cookie, String userAgent) {
+        static ClientContext fallback() {
+            String dsid = md5Static(UUID.randomUUID().toString() + System.currentTimeMillis());
+            return new ClientContext(dsid, "127.0.0.1", "", "Unknown");
+        }
+        private static String md5Static(String input) {
+            try {
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                byte[] digest = md.digest(input.getBytes(StandardCharsets.UTF_8));
+                return HexFormat.of().formatHex(digest);
+            } catch (Exception e) {
+                return UUID.randomUUID().toString().replace("-", "");
+            }
+        }
     }
 }

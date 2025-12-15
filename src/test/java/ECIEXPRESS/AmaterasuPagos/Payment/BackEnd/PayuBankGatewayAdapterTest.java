@@ -72,7 +72,16 @@ class PayuBankGatewayAdapterTest {
             "state": "APPROVED",
             "authorizationCode": "AUTH999",
             "responseCode": "APPROVED",
-            "responseMessage": "APPROVED OK"
+            "responseMessage": "APPROVED OK",
+            "additionalInfo": {
+              "payments": [
+                {
+                  "type": "CREDIT_CARD",
+                  "amount": "100000.0",
+                  "currency": "COP"
+                }
+              ]
+            }
           }
         }
         """;
@@ -123,8 +132,10 @@ class PayuBankGatewayAdapterTest {
 
         assertNotNull(response);
         assertFalse(response.isSuccess());
-        assertEquals("PAYU_PROCESSING_ERROR", response.getResponseCode());
-        assertEquals(BankResponseCode.BANK_UNAVAILABLE, response.getBankResponseCode());
+        // Updated to expect "BANK_ERROR" instead of "PAYU_PROCESSING_ERROR"
+        assertEquals("BANK_ERROR", response.getResponseCode());
+        // Updated to expect BANK_ERROR instead of BANK_UNAVAILABLE
+        assertEquals(BankResponseCode.BANK_ERROR, response.getBankResponseCode());
     }
 
     private void setField(Object target, String fieldName, Object value) {

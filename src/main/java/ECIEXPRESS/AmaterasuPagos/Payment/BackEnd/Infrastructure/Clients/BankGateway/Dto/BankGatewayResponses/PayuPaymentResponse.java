@@ -3,6 +3,7 @@ package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.BankGat
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class PayuPaymentResponse {
@@ -26,7 +27,7 @@ public class PayuPaymentResponse {
         private String transactionDate;
         private String transactionTime;
         private String operationDate;
-        private String extraParameters;
+        private Map<String, Object> extraParameters;
         private PayuAdditionalInfo additionalInfo;
     }
 
