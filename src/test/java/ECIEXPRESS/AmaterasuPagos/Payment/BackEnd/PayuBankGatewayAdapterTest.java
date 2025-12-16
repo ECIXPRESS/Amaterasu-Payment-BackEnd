@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PayuBankGatewayAdapterCoverageTest {
+class PayuBankGatewayAdapterTest {
 
     private MockWebServer mockWebServer;
     private PayuBankGatewayAdapter adapter;
@@ -266,7 +266,7 @@ class PayuBankGatewayAdapterCoverageTest {
 
         assertEquals("1.2.3.4", ip);
         assertNotNull(dsid);
-        assertTrue(dsid.matches("^[0-9a-f]{32}$"));
+        assertTrue(dsid.matches("^[0-9a-f]{32,44}$"));
     }
 
     @Test

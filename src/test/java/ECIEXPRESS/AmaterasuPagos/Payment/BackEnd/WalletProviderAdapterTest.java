@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class WalletProviderAdapterCoverageTest {
+class WalletProviderAdapterTest {
 
     private MockWebServer mockWebServer;
     private WalletProviderAdapter walletProviderAdapter;

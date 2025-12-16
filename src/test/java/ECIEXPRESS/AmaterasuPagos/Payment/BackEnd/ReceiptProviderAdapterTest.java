@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ReceiptProviderAdapterCoverageTest {
+class ReceiptProviderAdapterTest {
 
     private MockWebServer mockWebServer;
     private ReceiptProviderAdapter receiptProviderAdapter;
