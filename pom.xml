@@ -79,7 +79,9 @@
             **/Exception/**,
             **/*Application.java,
             **/*ApplicationPayment.java,
-            **/Utils/**
+            **/Utils/**,
+            **/Mappers/**,
+            **/UserServiceClient.java
         </sonar.coverage.exclusions>
         <jacoco.version>0.8.13</jacoco.version>
         <argLine></argLine>

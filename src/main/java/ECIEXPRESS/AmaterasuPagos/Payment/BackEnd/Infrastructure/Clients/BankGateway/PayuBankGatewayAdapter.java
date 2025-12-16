@@ -270,7 +270,7 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
     @SuppressWarnings("java:S4790")
     private String payuMd5Hex(String input) {
         try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
+            MessageDigest md = MessageDigest.getInstance("MD5"); // NOSONAR - PayU signature requirement
             byte[] digest = md.digest(input.getBytes(StandardCharsets.UTF_8));
             return HexFormat.of().formatHex(digest);
         } catch (Exception e) {
@@ -287,7 +287,7 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
         String brand = inferCardBrand(pan);
 
         if (bank.getBankPaymentType() == BankPaymentType.DEBIT_CARD) {
-           if ("VISA".equals(brand)) {
+            if ("VISA".equals(brand)) {
                 return "VISA_DEBIT";
             }
         }
@@ -382,15 +382,6 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
         return body.length() > 1000 ? body.substring(0, 1000) + "..." : body;
     }
 
-    private String md5Hex(String input) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] digest = md.digest(input.getBytes(StandardCharsets.UTF_8));
-            return HexFormat.of().formatHex(digest);
-        } catch (Exception e) {
-            throw new IllegalStateException("Unable to compute MD5 signature", e);
-        }
-    }
 
     private String formatExpiryDate(String expiryDate) {
         if (expiryDate == null || expiryDate.isBlank()) {
@@ -526,15 +517,6 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
         static ClientContext fallback() {
             String dsid = UUID.randomUUID().toString().replace("-", "") + Long.toHexString(System.currentTimeMillis());
             return new ClientContext(dsid, "127.0.0.1", "", "Unknown");
-        }
-        private static String md5Static(String input) {
-            try {
-                MessageDigest md = MessageDigest.getInstance("MD5");
-                byte[] digest = md.digest(input.getBytes(StandardCharsets.UTF_8));
-                return HexFormat.of().formatHex(digest);
-            } catch (Exception e) {
-                return UUID.randomUUID().toString().replace("-", "");
-            }
         }
     }
 }
