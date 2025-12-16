@@ -115,6 +115,7 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
     }
 
     private PayuPaymentRequest buildPayuRequest(CreatePaymentRequest request) {
+        String phone = "3000000000";
         BigDecimal txValue = toCopAmount(request.originalAmount());
 
         String referenceCode = request.orderId();
@@ -138,7 +139,7 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
                 .state("Cundinamarca")
                 .country("CO")
                 .postalCode("110111")
-                .phone("3000000000")
+                .phone(phone)
                 .build();
 
         String buyerFullName = bank.getCardHolderName() != null ? bank.getCardHolderName() : request.clientId();
@@ -148,7 +149,7 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
                 .merchantBuyerId(request.clientId())
                 .fullName(buyerFullName)
                 .emailAddress(buyerEmail)
-                .contactPhone("3000000000")
+                .contactPhone(phone)
                 .dniNumber("12345678")
                 .shippingAddress(shippingAddress)
                 .build();
@@ -157,7 +158,7 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
                 .merchantPayerId(request.clientId())
                 .fullName(buyerFullName)
                 .emailAddress(buyerEmail)
-                .contactPhone("3000000000")
+                .contactPhone(phone)
                 .dniNumber("12345678")
                 .billingAddress(shippingAddress)
                 .build();
