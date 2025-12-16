@@ -264,7 +264,18 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
     private String generateSignature(String referenceCode, BigDecimal txValue) {
         String value = txValue.stripTrailingZeros().toPlainString();
         String raw = apiKey + "~" + merchantId + "~" + referenceCode + "~" + value + "~" + currency;
-        return md5Hex(raw);
+        return payuMd5Hex(raw);
+    }
+
+    @SuppressWarnings("java:S4790") // PayU interoperability requirement (signature)
+    private String payuMd5Hex(String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] digest = md.digest(input.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(digest);
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to compute PayU MD5 signature", e);
+        }
     }
 
     private String resolvePayuPaymentMethod(BankDetails bank) {
