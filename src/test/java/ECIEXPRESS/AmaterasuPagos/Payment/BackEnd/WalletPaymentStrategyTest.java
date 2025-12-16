@@ -12,9 +12,9 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Enums.PaymentStatu
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.PromotionProvider;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.ReceiptProvider;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.WalletProvider;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.PromotionResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.ApplyPromotionResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Receipt.Dto.ReceiptResponses.CreateReceiptResponse;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Wallet.Dto.WalletResponses.CreateWalletResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Wallet.Dto.WalletResponses.PayWithWalletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,13 +47,13 @@ class WalletPaymentStrategyTest {
         wallet.setPaymentMethodType(PaymentMethodType.WALLET);
         var request = new CreatePaymentRequest("ORDER-2", "CLIENT-2", "STORE-2", 80000.0, wallet, null);
 
-        var promo = new PromotionResponse(70000.0, List.of("PROMO-10"));
+        var promo = new ApplyPromotionResponse(70000.0, List.of("PROMO-10"));
         when(promotionProvider.applyPromotions("ORDER-2")).thenReturn(promo);
 
         when(walletProvider.processPayment(any(CreatePaymentRequest.class)))
-                .thenReturn(new CreateWalletResponse(PaymentStatus.COMPLETED));
+                .thenReturn(new PayWithWalletResponse(PaymentStatus.COMPLETED));
 
-        var receipt = new CreateReceiptResponse("R-2", "ORDER-2", "STORE-2", 70000.0, ReceiptStatus.PAYED);
+        var receipt = new CreateReceiptResponse("R-2", "ORDER-2", "CLIENT-1","STORE-2", 70000.0, ReceiptStatus.PAYED, "QR-2");
         when(receiptProvider.createReceipt(any(Payment.class))).thenReturn(receipt);
 
         CreatePaymentResponse response = strategy.createPayment(request);
@@ -90,7 +90,7 @@ class WalletPaymentStrategyTest {
         var request = new CreatePaymentRequest("ORDER-ERR", "CLIENT-X", "STORE-Y", 1000.0, wallet, null);
 
         when(promotionProvider.applyPromotions(anyString()))
-                .thenReturn(new PromotionResponse(900.0, List.of("P")));
+                .thenReturn(new ApplyPromotionResponse(900.0, List.of("P")));
         when(walletProvider.processPayment(any(CreatePaymentRequest.class)))
                 .thenThrow(new RuntimeException("wallet error"));
 

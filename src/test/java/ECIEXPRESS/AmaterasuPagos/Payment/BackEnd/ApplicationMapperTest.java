@@ -9,7 +9,7 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.BankDetails;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.Cash;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.PaymentMethod;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.TimeStamps;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.PromotionResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.ApplyPromotionResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Receipt.Dto.ReceiptResponses.CreateReceiptResponse;
 import org.junit.jupiter.api.Test;
 
@@ -32,12 +32,12 @@ class ApplicationMapperTest {
         );
 
         List<String> appliedPromotions = Arrays.asList("PROMO-10%", "WELCOME-5");
-        PromotionResponse promotionResponse = new PromotionResponse(90000.0, appliedPromotions);
+        ApplyPromotionResponse applyPromotionResponse = new ApplyPromotionResponse(90000.0, appliedPromotions);
 
         TimeStamps timeStamps = new TimeStamps("2024-01-01T10:00:00", null);
 
         // When
-        PaymentDto result = ApplicationMapper.createCashPaymentDto(request, promotionResponse, timeStamps);
+        PaymentDto result = ApplicationMapper.createCashPaymentDto(request, applyPromotionResponse, timeStamps);
 
         // Then
         assertNotNull(result);
@@ -64,12 +64,12 @@ class ApplicationMapperTest {
         );
 
         List<String> appliedPromotions = Arrays.asList("PROMO-5%");
-        PromotionResponse promotionResponse = new PromotionResponse(95000.0, appliedPromotions);
+        ApplyPromotionResponse applyPromotionResponse = new ApplyPromotionResponse(95000.0, appliedPromotions);
 
         TimeStamps timeStamps = new TimeStamps("2024-01-01T10:00:00", "2024-01-01T10:05:00");
 
         // When
-        PaymentDto result = ApplicationMapper.createBankPaymentDto(request, promotionResponse, timeStamps);
+        PaymentDto result = ApplicationMapper.createBankPaymentDto(request, applyPromotionResponse, timeStamps);
 
         // Then
         assertNotNull(result);
@@ -95,12 +95,12 @@ class ApplicationMapperTest {
                 100000.0, paymentMethod, bankDetails
         );
 
-        PromotionResponse promotionResponse = new PromotionResponse(85000.0,
+        ApplyPromotionResponse applyPromotionResponse = new ApplyPromotionResponse(85000.0,
                 Arrays.asList("BIG-SALE"));
 
         // When
         CreatePaymentRequest updatedRequest = ApplicationMapper.updatePaymentRequest(
-                originalRequest, promotionResponse);
+                originalRequest, applyPromotionResponse);
 
         // Then
         assertNotNull(updatedRequest);
@@ -116,7 +116,7 @@ class ApplicationMapperTest {
     void receiptResponseToPaymentResponse_ShouldMapAllFields() {
         // Given
         CreateReceiptResponse receiptResponse = new CreateReceiptResponse(
-                "RECEIPT-123", "ORDER-123", "STORE-789", 95000.0, ReceiptStatus.PAYED
+                "RECEIPT-123", "ORDER-123", "CLIENT-456", "STORE-789", 95000.0, ReceiptStatus.PAYED, "QR-123"
         );
 
         // When
@@ -140,11 +140,11 @@ class ApplicationMapperTest {
                 100000.0, paymentMethod, null
         );
 
-        PromotionResponse promotionResponse = new PromotionResponse(90000.0, null);
+        ApplyPromotionResponse applyPromotionResponse = new ApplyPromotionResponse(90000.0, null);
         TimeStamps timeStamps = new TimeStamps("2024-01-01T10:00:00", null);
 
         // When
-        PaymentDto result = ApplicationMapper.createCashPaymentDto(request, promotionResponse, timeStamps);
+        PaymentDto result = ApplicationMapper.createCashPaymentDto(request, applyPromotionResponse, timeStamps);
 
         // Then
         assertNotNull(result);
@@ -161,11 +161,11 @@ class ApplicationMapperTest {
                 100000.0, paymentMethod, null
         );
 
-        PromotionResponse promotionResponse = new PromotionResponse(100000.0, Arrays.asList());
+        ApplyPromotionResponse applyPromotionResponse = new ApplyPromotionResponse(100000.0, Arrays.asList());
         TimeStamps timeStamps = new TimeStamps("2024-01-01T10:00:00", null);
 
         // When
-        PaymentDto result = ApplicationMapper.createBankPaymentDto(request, promotionResponse, timeStamps);
+        PaymentDto result = ApplicationMapper.createBankPaymentDto(request, applyPromotionResponse, timeStamps);
 
         // Then
         assertNotNull(result);

@@ -9,7 +9,7 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.*;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.BankGatewayProvider;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.PromotionProvider;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Ports.ReceiptProvider;
-import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.PromotionResponse;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promotion.Dto.PromotionResponses.ApplyPromotionResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Receipt.Dto.ReceiptResponses.CreateReceiptResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Exception.BankValidationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,14 +60,14 @@ class BankPaymentStrategyTest {
         BankValidationResult validation = new BankValidationResult();
         when(validationService.createValidation(details)).thenReturn(validation);
 
-        var promo = new PromotionResponse(90000.0, List.of("PROMO-10"));
+        var promo = new ApplyPromotionResponse(90000.0, List.of("PROMO-10"));
         when(promotionProvider.applyPromotions("ORDER-3")).thenReturn(promo);
 
         GatewayResponse gatewayResponse = new GatewayResponse(
                 true, "BRN-123", "AUTH-456", "APPROVED", "APPROVED", BankResponseCode.APPROVED, 90000.0, "COP");
         when(bankGatewayProvider.processPayment(any(CreatePaymentRequest.class))).thenReturn(gatewayResponse);
 
-        var receipt = new CreateReceiptResponse("R-3", "ORDER-3", "STORE-3", 90000.0, ReceiptStatus.PAYED);
+        var receipt = new CreateReceiptResponse("R-3", "ORDER-3","CLIENT-1", "STORE-3", 90000.0, ReceiptStatus.PAYED, "QR-3");
         when(receiptProvider.createReceipt(any(Payment.class))).thenReturn(receipt);
 
         CreatePaymentResponse response = strategy.createPayment(request);

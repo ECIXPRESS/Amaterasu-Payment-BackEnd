@@ -10,5 +10,9 @@ public enum BankResponseCode {
     BANK_UNAVAILABLE,
     TIMEOUT,
     PENDING,
-    ERROR
+    ERROR,
+    BANK_ERROR,
+    INVALID_CARD,
+    UNKNOWN_ERROR,
+    INVALID_REQUEST
 }

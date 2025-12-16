@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8085
 
 spring:
   application:
@@ -32,28 +32,20 @@ springdoc:
     description: API para gestión de pagos en ECIEXPRESS
 
 # Configuración de Microservicios Externos
+
+gateway:
+  url: http://gateway:8081
+
 microservices:
   receipt:
-    url: http://localhost:8081
-    base-path: /api/v1/receipts
-    timeout: 5000
-    retry:
-      max-attempts: 3
-      backoff-delay: 1000
+    base-path: /api/receipts
+
   promotion:
-    url: http://localhost:8083
-    base-path: /api/v1/promotions
-    timeout: 3000
-    retry:
-      max-attempts: 2
-      backoff-delay: 500
+    base-path: /api/promotions
+
   wallet:
-    url: http://localhost:8082
-    base-path: /api/v1/wallet
-    timeout: 4000
-    retry:
-      max-attempts: 3
-      backoff-delay: 750
+    base-path: /api/wallets
+
   bank-gateway:
     payu:
       base-url: https://sandbox.api.payulatam.com/payments-api/4.0/service.cgi
@@ -63,6 +55,9 @@ microservices:
       account-id: 512321
       currency: COP
       test-mode: true
+      notify-url: ""
+      installments-number: 1
+      include-iva: true
       timeout: 30000
 
 # Configuración de Resilience4j para Circuit Breaker

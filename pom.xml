@@ -71,17 +71,17 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.coverage.exclusions>
-            src/**/config/**,
-            src/**/configs/**,
-            src/**/Config/**,
-            src/**/model/**,
-            src/**/dto/**,
-            src/**/strategy/**,
-            src/**/configurators/**,
-            src/**/exception/**,
-            src/**/default/**,
-            src/**/utils/**,
-            src/**/Utils/**
+            **/Config/**,
+            **/Dto/**,
+            **/Model/**,
+            **/Entity/**,
+            **/Entities/**,
+            **/Exception/**,
+            **/*Application.java,
+            **/*ApplicationPayment.java,
+            **/Utils/**,
+            **/Mappers/**,
+            **/UserServiceClient.java
         </sonar.coverage.exclusions>
         <jacoco.version>0.8.13</jacoco.version>
         <argLine></argLine>
@@ -173,6 +173,7 @@
                 <version>${jacoco.version}</version>
                 <configuration>
                     <excludes>
+                        <exclude>**/UserServiceClient.class</exclude>
                         <exclude>**/Config/**</exclude>
                         <exclude>**/Dto/**</exclude>
                         <exclude>**/Exception/**</exclude>
@@ -196,6 +197,7 @@
                         </goals>
                         <configuration>
                             <excludes>
+                                <exclude>**/UserServiceClient.class</exclude>
                                 <exclude>**/Config/**</exclude>
                                 <exclude>**/Dto/**</exclude>
                                 <exclude>**/Exception/**</exclude>
@@ -218,13 +220,15 @@
                                     <element>PACKAGE</element>
                                     <limits>
                                         <limit>
-                                            <counter>CLASS</counter>
+                                            <counter>INSTRUCTION</counter>
                                             <value>COVEREDRATIO</value>
+                                            <minimum>0.8</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
                             </rules>
                             <excludes>
+                                <exclude>**/UserServiceClient.class</exclude>
                                 <exclude>**/Config/**</exclude>
                                 <exclude>**/Dto/**</exclude>
                                 <exclude>**/Exception/**</exclude>

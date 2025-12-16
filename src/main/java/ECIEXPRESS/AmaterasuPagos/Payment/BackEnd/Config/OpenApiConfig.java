@@ -24,7 +24,7 @@ public class OpenApiConfig {
                         .description("API para gestión de pagos en el sistema ECIEXPRESS"))
                 .servers(List.of(
                         new Server()
-                                .url("http://localhost:8080")
+                                .url("http://localhost:8085")
                                 .description("Servidor de Desarrollo"),
                         new Server()
                                 .url("https://api.eciexpress.com")

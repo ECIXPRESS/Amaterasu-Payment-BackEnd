@@ -1,5 +1,8 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd;
 
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.Strategy.BankPaymentStrategy;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.Strategy.CashPaymentStrategy;
+import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.Strategy.WalletPaymentStrategy;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentRequests.CreatePaymentRequest;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.PaymentResponses.CreatePaymentResponse;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Application.Services.PaymentService;
@@ -24,13 +27,13 @@ import static org.mockito.Mockito.*;
 class PaymentServiceTest {
 
     @Mock
-    private PaymentStrategy bankPaymentStrategy;
+    private BankPaymentStrategy bankPaymentStrategy;
 
     @Mock
-    private PaymentStrategy cashPaymentStrategy;
+    private CashPaymentStrategy cashPaymentStrategy;
 
     @Mock
-    private PaymentStrategy walletPaymentStrategy;
+    private WalletPaymentStrategy walletPaymentStrategy;
 
     private PaymentService paymentService;
 
@@ -41,19 +44,11 @@ class PaymentServiceTest {
     @BeforeEach
     void setUp() {
 
-        paymentService = new PaymentService();
-        Map<PaymentMethodType, PaymentStrategy> mockStrategyMap = Map.of(
-                PaymentMethodType.BANK, bankPaymentStrategy,
-                PaymentMethodType.WALLET, walletPaymentStrategy,
-                PaymentMethodType.CASH, cashPaymentStrategy
+        paymentService = new PaymentService(
+                bankPaymentStrategy,
+                walletPaymentStrategy,
+                cashPaymentStrategy
         );
-        try {
-            Field field = PaymentService.class.getDeclaredField("strategyMap");
-            field.setAccessible(true);
-            field.set(paymentService, mockStrategyMap);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         // Crear requests de prueba
         BankDetails bankDetails = new BankDetails();
         bankDetails.setBankName("Bancolombia");
@@ -103,7 +98,7 @@ class PaymentServiceTest {
     void createPayment_WithBankPayment_ShouldCallBankStrategy() {
         // Given
         CreatePaymentResponse expectedResponse = new CreatePaymentResponse(
-                "RECEIPT-123", "ORDER-123", "STORE-789", 100000.0, null
+                "RECEIPT-123", "ORDER-123", "STORE-789", 100000.0, null, "QR_CODE"
         );
         when(bankPaymentStrategy.createPayment(any())).thenReturn(expectedResponse);
 
@@ -121,7 +116,7 @@ class PaymentServiceTest {
     void createPayment_WithCashPayment_ShouldCallCashStrategy() {
         // Given
         CreatePaymentResponse expectedResponse = new CreatePaymentResponse(
-                "RECEIPT-124", "ORDER-124", "STORE-790", 50000.0, null
+                "RECEIPT-124", "ORDER-124", "STORE-790", 50000.0, null, "QR_CODE"
         );
         when(cashPaymentStrategy.createPayment(any())).thenReturn(expectedResponse);
 
@@ -139,7 +134,7 @@ class PaymentServiceTest {
     void createPayment_WithWalletPayment_ShouldCallWalletStrategy() {
         // Given
         CreatePaymentResponse expectedResponse = new CreatePaymentResponse(
-                "RECEIPT-125", "ORDER-125", "STORE-791", 75000.0, null
+                "RECEIPT-125", "ORDER-125", "STORE-791", 75000.0, null, "QR_CODE"
         );
         when(walletPaymentStrategy.createPayment(any())).thenReturn(expectedResponse);
 
