@@ -4,11 +4,13 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Web.Dto.UserDeta
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Optional;
@@ -33,22 +35,36 @@ public class UserServiceClient {
             log.info("Obteniendo email del usuario {} desde: {}", userId, url);
 
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-            return response.getBody();
+            String body = response.getBody();
+
+            if (body == null || body.isBlank()) {
+                log.error("Servicio de usuarios devolvió body vacío para userId={}", userId);
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_GATEWAY,
+                        "Servicio de usuarios devolvió una respuesta vacía para el usuario " + userId
+                );
+            }
+
+            return body;
 
         } catch (HttpClientErrorException.NotFound e) {
             log.warn("Usuario no encontrado con ID: {}", userId);
-            throw new RuntimeException("Usuario no encontrado: " + userId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado: " + userId, e);
+
         } catch (ResourceAccessException e) {
-            log.error("No se puede conectar al servicio de usuarios: {} - URL: {}",
-                    e.getMessage(), userServiceBaseUrl);
-            throw new RuntimeException("Servicio de usuarios no disponible");
+            log.error("No se puede conectar al servicio de usuarios: {} - URL: {}", e.getMessage(), userServiceBaseUrl, e);
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Servicio de usuarios no disponible", e);
+
+        } catch (ResponseStatusException e) {
+            throw e;
+
         } catch (Exception e) {
-            log.error("Error obteniendo email del usuario {}: {}", userId, e.getMessage());
-            throw new RuntimeException("Error obteniendo información del usuario");
+            log.error("Error obteniendo email del usuario {}: {}", userId, e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Error obteniendo información del usuario", e);
         }
     }
 
-    public Optional<    UserDetailsDto> getUserDetails(String userId) {
+    public Optional<UserDetailsDto> getUserDetails(String userId) {
         try {
             String url = UriComponentsBuilder.fromHttpUrl(userServiceBaseUrl)
                     .path("/api/users/{userId}")
@@ -63,8 +79,9 @@ public class UserServiceClient {
         } catch (HttpClientErrorException.NotFound e) {
             log.warn("Usuario no encontrado con ID: {}", userId);
             return Optional.empty();
+
         } catch (Exception e) {
-            log.error("Error obteniendo detalles del usuario {}: {}", userId, e.getMessage());
+            log.error("Error obteniendo detalles del usuario {}: {}", userId, e.getMessage(), e);
             return Optional.empty();
         }
     }

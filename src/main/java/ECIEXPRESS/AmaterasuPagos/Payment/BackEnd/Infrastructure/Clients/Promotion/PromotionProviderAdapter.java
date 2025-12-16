@@ -86,9 +86,14 @@ public class PromotionProviderAdapter implements PromotionProvider {
         String cleanBaseUrl = stripTrailingSlash(baseUrl);
         String cleanBasePath = stripTrailingSlash(basePath);
 
-        String cleanSuffix = (pathSuffix == null || pathSuffix.isBlank())
-                ? ""
-                : (pathSuffix.startsWith("/") ? pathSuffix : "/" + pathSuffix);
+        String cleanSuffix = "";
+        if (pathSuffix != null && !pathSuffix.isBlank()) {
+            if (pathSuffix.startsWith("/")) {
+                cleanSuffix = pathSuffix;
+            } else {
+                cleanSuffix = "/" + pathSuffix;
+            }
+        }
 
         return String.format("%s%s%s", cleanBaseUrl, ensureLeadingSlash(cleanBasePath), cleanSuffix);
     }

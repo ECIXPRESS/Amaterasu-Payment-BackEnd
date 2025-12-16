@@ -115,7 +115,6 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
     }
 
     private PayuPaymentRequest buildPayuRequest(CreatePaymentRequest request) {
-        String phone = "3000000000";
         BigDecimal txValue = toCopAmount(request.originalAmount());
 
         String referenceCode = request.orderId();
@@ -139,7 +138,7 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
                 .state("Cundinamarca")
                 .country("CO")
                 .postalCode("110111")
-                .phone(phone)
+                .phone("3000000000")
                 .build();
 
         String buyerFullName = bank.getCardHolderName() != null ? bank.getCardHolderName() : request.clientId();
@@ -149,7 +148,7 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
                 .merchantBuyerId(request.clientId())
                 .fullName(buyerFullName)
                 .emailAddress(buyerEmail)
-                .contactPhone(phone)
+                .contactPhone("3000000000")
                 .dniNumber("12345678")
                 .shippingAddress(shippingAddress)
                 .build();
@@ -158,7 +157,7 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
                 .merchantPayerId(request.clientId())
                 .fullName(buyerFullName)
                 .emailAddress(buyerEmail)
-                .contactPhone(phone)
+                .contactPhone("3000000000")
                 .dniNumber("12345678")
                 .billingAddress(shippingAddress)
                 .build();
@@ -268,17 +267,6 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
         return payuMd5Hex(raw);
     }
 
-    @SuppressWarnings("java:S4790")
-    private String payuMd5Hex(String input) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5"); // NOSONAR - PayU signature requirement
-            byte[] digest = md.digest(input.getBytes(StandardCharsets.UTF_8));
-            return HexFormat.of().formatHex(digest);
-        } catch (Exception e) {
-            throw new IllegalStateException("Unable to compute PayU MD5 signature", e);
-        }
-    }
-
     private String resolvePayuPaymentMethod(BankDetails bank) {
         String pan = bank.getAccountNumber();
         if (pan == null || pan.isBlank()) {
@@ -287,10 +275,8 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
 
         String brand = inferCardBrand(pan);
 
-        if (bank.getBankPaymentType() == BankPaymentType.DEBIT_CARD) {
-            if ("VISA".equals(brand)) {
-                return "VISA_DEBIT";
-            }
+        if (bank.getBankPaymentType() == BankPaymentType.DEBIT_CARD && "VISA".equals(brand)) {
+            return "VISA_DEBIT";
         }
         return brand;
     }
@@ -319,10 +305,11 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
         }
         return bd.setScale(0, RoundingMode.UNNECESSARY);
     }
-
     private String generateDeviceSessionId() {
-        return UUID.randomUUID().toString().replace("-", "") + Long.toHexString(System.currentTimeMillis());
+        // PayU anti-fraud field: needs to be unique per transaction (UUID without dashes is 32 hex chars).
+        return UUID.randomUUID().toString().replace("-", "");
     }
+
 
     private ClientContext resolveClientContext() {
         try {
@@ -342,15 +329,7 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
                     req.getHeader("X-Device-Session-Id"),
                     req.getParameter("deviceSessionId")
             );
-
             if (deviceSessionId == null || deviceSessionId.isBlank()) {
-                String sessionId = null;
-                if (req.getSession(false) != null) {
-                    sessionId = req.getSession(false).getId();
-                }
-                if (sessionId == null) {
-                    sessionId = UUID.randomUUID().toString();
-                }
                 deviceSessionId = generateDeviceSessionId();
             }
 
@@ -381,6 +360,21 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
     private String safeBody(String body) {
         if (body == null) return "";
         return body.length() > 1000 ? body.substring(0, 1000) + "..." : body;
+    }
+    /**
+     * PayU authentication signature hashing.
+     *
+     * <p>Although MD5 is a weak hash algorithm, here it is used strictly for PayU interoperability.
+     */
+    @SuppressWarnings({"java:S4790", "squid:S4790"})
+    private String payuMd5Hex(String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5"); // NOSONAR - PayU requires MD5 signature hashing for interoperability
+            byte[] digest = md.digest(input.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(digest);
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to compute PayU MD5 signature", e);
+        }
     }
 
 
@@ -516,8 +510,9 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
 
     private record ClientContext(String deviceSessionId, String ipAddress, String cookie, String userAgent) {
         static ClientContext fallback() {
-            String dsid = UUID.randomUUID().toString().replace("-", "") + Long.toHexString(System.currentTimeMillis());
+            String dsid = UUID.randomUUID().toString().replace("-", "");
             return new ClientContext(dsid, "127.0.0.1", "", "Unknown");
         }
     }
+
 }

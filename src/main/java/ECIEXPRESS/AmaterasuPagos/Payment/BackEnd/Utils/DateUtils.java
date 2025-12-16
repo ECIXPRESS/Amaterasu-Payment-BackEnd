@@ -1,14 +1,16 @@
 package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Utils;
 
-
-import org.springframework.stereotype.Component;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-@Component
-public class DateUtils {
+public final class DateUtils {
+
+    private DateUtils() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static final String ISO_DATE_FORMAT = "yyyy-MM-dd";
     public static final String ISO_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
@@ -17,16 +19,16 @@ public class DateUtils {
     public static final String TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     public static String formatDate(Date date, String format) {
-        java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat(format);
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
         return formatter.format(date);
     }
 
     public static Date parseDate(String dateString, String format) {
         try {
-            java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat(format);
+            SimpleDateFormat formatter = new SimpleDateFormat(format);
             return formatter.parse(dateString);
-        } catch (Exception e) {
-            throw new RuntimeException("Error parsing date: " + dateString, e);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Error parsing date: " + dateString + " (format=" + format + ")", e);
         }
     }
 
@@ -60,4 +62,3 @@ public class DateUtils {
         return toIsoString(LocalDateTime.now());
     }
 }
-

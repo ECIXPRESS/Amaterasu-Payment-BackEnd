@@ -56,7 +56,7 @@ public class BankPaymentStrategy implements PaymentStrategy {
 
         if (gatewayResponse == null || gatewayResponse.getBankReceiptNumber() == null || gatewayResponse.getBankReceiptNumber().isBlank()) {
             log.error("PayU did not return transactionId (bankReceiptNumber). Cannot create receipt.");
-            throw new RuntimeException("PayU did not return transactionId (bankReceiptNumber). Cannot create receipt.");
+            throw new IllegalStateException("PayU did not return transactionId (bankReceiptNumber). Cannot create receipt. orderId=" + orderId);
         }
 
         if (createPaymentRequest.paymentMethod() instanceof Bank bank) {

@@ -112,7 +112,7 @@ public class WalletProviderAdapter implements WalletProvider {
     private String safeBody(org.springframework.web.client.RestClientResponseException e) {
         try {
             String body = e.getResponseBodyAsString();
-            return body == null ? "" : body;
+            return body;
         } catch (Exception ignored) {
             return "";
         }

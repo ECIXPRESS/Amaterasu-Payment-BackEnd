@@ -104,9 +104,14 @@ public class ReceiptProviderAdapter implements ReceiptProvider {
             }
         }
 
-        String cleanSuffix = (pathSuffix == null || pathSuffix.isBlank())
-                ? ""
-                : (pathSuffix.startsWith("/") ? pathSuffix : "/" + pathSuffix);
+        String cleanSuffix = "";
+        if (pathSuffix != null && !pathSuffix.isBlank()) {
+            if (pathSuffix.startsWith("/")) {
+                cleanSuffix = pathSuffix;
+            } else {
+                cleanSuffix = "/" + pathSuffix;
+            }
+        }
 
         return String.format("%s%s%s", cleanBaseUrl, cleanBasePath, cleanSuffix);
     }
