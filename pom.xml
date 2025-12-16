@@ -171,6 +171,7 @@
                 <version>${jacoco.version}</version>
                 <configuration>
                     <excludes>
+                        <exclude>**/UserServiceClient.class</exclude>
                         <exclude>**/Config/**</exclude>
                         <exclude>**/Dto/**</exclude>
                         <exclude>**/Exception/**</exclude>
@@ -194,6 +195,7 @@
                         </goals>
                         <configuration>
                             <excludes>
+                                <exclude>**/UserServiceClient.class</exclude>
                                 <exclude>**/Config/**</exclude>
                                 <exclude>**/Dto/**</exclude>
                                 <exclude>**/Exception/**</exclude>
@@ -224,6 +226,7 @@
                                 </rule>
                             </rules>
                             <excludes>
+                                <exclude>**/UserServiceClient.class</exclude>
                                 <exclude>**/Config/**</exclude>
                                 <exclude>**/Dto/**</exclude>
                                 <exclude>**/Exception/**</exclude>
