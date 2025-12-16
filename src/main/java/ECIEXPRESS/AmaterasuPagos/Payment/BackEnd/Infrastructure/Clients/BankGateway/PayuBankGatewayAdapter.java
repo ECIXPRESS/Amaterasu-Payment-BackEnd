@@ -141,9 +141,6 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
                 .phone("3000000000")
                 .build();
 
-        // NOTE: PayU requires real buyer/payer data (full name, email, phone, dni, address).
-        // If you do not have these in this microservice, fetch them from your user/profile service
-        // or extend CreatePaymentRequest to receive them from the caller.
         String buyerFullName = bank.getCardHolderName() != null ? bank.getCardHolderName() : request.clientId();
         String buyerEmail = sanitizeEmailFallback(request.clientId());
 
@@ -226,14 +223,13 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
             throw new IllegalArgumentException("bankPaymentType is required to process a PayU payment");
         }
 
-        // This adapter currently supports card payments only.
         if (bank.getBankPaymentType() == BankPaymentType.PSE || bank.getBankPaymentType() == BankPaymentType.APP) {
             throw new IllegalArgumentException("BankPaymentType " + bank.getBankPaymentType() + " is not implemented in PayuBankGatewayAdapter yet");
         }
     }
 
     private Map<String, PayuPaymentRequest.AdditionalValue> buildAdditionalValues(BigDecimal totalAmount) {
-        BigDecimal txValue = totalAmount.stripTrailingZeros(); // must be integer for COP
+        BigDecimal txValue = totalAmount.stripTrailingZeros();
 
         BigDecimal tax;
         BigDecimal taxBase;
@@ -242,7 +238,6 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
             tax = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
             taxBase = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
         } else {
-            // Assume totalAmount includes IVA (19%). Base = total / 1.19 ; Tax = total - base
             taxBase = totalAmount.divide(new BigDecimal("1.19"), 2, RoundingMode.HALF_UP);
             tax = totalAmount.subtract(taxBase).setScale(2, RoundingMode.HALF_UP);
         }
@@ -281,8 +276,7 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
         String brand = inferCardBrand(pan);
 
         if (bank.getBankPaymentType() == BankPaymentType.DEBIT_CARD) {
-            // For Colombia, VISA debit uses VISA_DEBIT; Mastercard debit uses MASTERCARD (per PayU payment methods list).
-            if ("VISA".equals(brand)) {
+           if ("VISA".equals(brand)) {
                 return "VISA_DEBIT";
             }
         }
@@ -303,13 +297,11 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
         if (digits.matches("^(30[0-5]|36|38).*")) {
             return "DINERS";
         }
-        // Codensa etc would be specific BIN ranges; add here if needed.
         throw new IllegalArgumentException("Unsupported/unknown card brand for PAN prefix: " + digits.substring(0, Math.min(6, digits.length())));
     }
 
     private BigDecimal toCopAmount(double amount) {
         BigDecimal bd = BigDecimal.valueOf(amount).stripTrailingZeros();
-        // PayU Colombia requires TX_VALUE without decimals
         if (bd.scale() > 0) {
             throw new IllegalArgumentException("COP amount must not include decimals. Received: " + amount);
         }
@@ -391,24 +383,20 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
         }
         String exp = expiryDate.trim();
 
-        // Already in PayU format YYYY/MM
         if (exp.matches("\\d{4}/\\d{2}")) {
             return exp;
         }
 
-        // MM/YY
         if (exp.matches("\\d{2}/\\d{2}")) {
             String[] parts = exp.split("/");
             return "20" + parts[1] + "/" + parts[0];
         }
 
-        // MM/YYYY
         if (exp.matches("\\d{2}/\\d{4}")) {
             String[] parts = exp.split("/");
             return parts[1] + "/" + parts[0];
         }
 
-        // YYYY-MM
         if (exp.matches("\\d{4}-\\d{2}")) {
             String[] parts = exp.split("-");
             return parts[0] + "/" + parts[1];
@@ -434,11 +422,9 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
         GatewayResponse response = new GatewayResponse();
         response.setSuccess("APPROVED".equalsIgnoreCase(tx.getState()));
 
-        // IDs
         response.setBankReceiptNumber(tx.getTransactionId());
         response.setAuthorizationNumber(tx.getAuthorizationCode());
 
-        // Mensaje + código PayU
         String msg = firstNonBlank(
                 tx.getResponseMessage(),
                 tx.getPaymentNetworkResponseErrorMessage(),
@@ -450,12 +436,10 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
         String payuCode = firstNonBlank(tx.getResponseCode(), tx.getErrorCode(), tx.getState());
         response.setResponseCode(payuCode);
 
-        // Tu mapeo a enum interno (ajusta la firma según tu implementación actual)
         response.setBankResponseCode(
                 mapToBankResponseCode(tx.getResponseCode(), tx.getState())
         );
 
-        // Monto / moneda (si viene en additionalInfo)
         if (tx.getAdditionalInfo() != null
                 && tx.getAdditionalInfo().getPayments() != null
                 && !tx.getAdditionalInfo().getPayments().isEmpty()) {
@@ -511,14 +495,13 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
         response.setSuccess(false);
         response.setBankResponseCode(code);
         response.setGatewayMessage(message);
-        response.setResponseCode(code.name());   // o "ERROR" si prefieres
+        response.setResponseCode(code.name());
         response.setProcessedAmount(0.0);
-        response.setCurrency("COP");             // si siempre trabajas COP
+        response.setCurrency("COP");
         return response;
     }
 
     private String sanitizeEmailFallback(String clientId) {
-        // Keep existing behavior but ensure valid email local-part characters
         String safe = clientId == null ? "unknown" : clientId.replaceAll("[^A-Za-z0-9._%+-]", "");
         if (safe.isBlank()) safe = "unknown";
         return safe + "@example.com";

@@ -23,9 +23,6 @@ public class UserServiceClient {
     @Value("${user.service.url:http://localhost:8081}")
     private String userServiceBaseUrl;
 
-    /**
-     * Obtiene el email del usuario por su ID
-     */
     public String getUserEmailById(String userId) {
         try {
             String url = UriComponentsBuilder.fromHttpUrl(userServiceBaseUrl)
@@ -51,9 +48,6 @@ public class UserServiceClient {
         }
     }
 
-    /**
-     * Obtiene detalles completos del usuario por ID
-     */
     public Optional<    UserDetailsDto> getUserDetails(String userId) {
         try {
             String url = UriComponentsBuilder.fromHttpUrl(userServiceBaseUrl)

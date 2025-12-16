@@ -59,7 +59,6 @@ public class BankPaymentStrategy implements PaymentStrategy {
             throw new RuntimeException("PayU did not return transactionId (bankReceiptNumber). Cannot create receipt.");
         }
 
-        log.info("Bank gateway processed payment: orderId={}, gatewayResponse={}", orderId, gatewayResponse);
         if (createPaymentRequest.paymentMethod() instanceof Bank bank) {
             String bankReceiptNumber = gatewayResponse != null ? gatewayResponse.getBankReceiptNumber() : null;
 
@@ -83,7 +82,6 @@ public class BankPaymentStrategy implements PaymentStrategy {
             }
         }
 
-        log.info("Bank gateway processed payment: orderId={}, gatewayResponse={}", orderId, gatewayResponse);
         PaymentDto paymentDto = createBankPaymentDto(createPaymentRequest, applyPromotionResponse, timeStamps);
         payment = payment.createPayment(new Context(paymentDto, gatewayResponse, bankValidationResult));
 

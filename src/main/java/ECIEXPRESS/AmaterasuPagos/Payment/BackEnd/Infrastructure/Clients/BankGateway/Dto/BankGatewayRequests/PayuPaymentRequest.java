@@ -30,10 +30,6 @@ public class PayuPaymentRequest {
     public static class Transaction {
         private Order order;
 
-        /**
-         * Use either creditCard or debitCard depending on the payment method.
-         * Do not send both.
-         */
         private CreditCard creditCard;
         private DebitCard debitCard;
 
@@ -42,13 +38,11 @@ public class PayuPaymentRequest {
         private String paymentCountry;
         private Payer payer;
 
-        // Anti-fraud fields (mandatory for card payments in PayU Payments API - Colombia docs)
         private String deviceSessionId;
         private String ipAddress;
         private String cookie;
         private String userAgent;
 
-        // Extra parameters (e.g., INSTALLMENTS_NUMBER)
         private Map<String, Object> extraParameters;
     }
 
@@ -64,21 +58,14 @@ public class PayuPaymentRequest {
         private String signature;
         private Buyer buyer;
 
-        /**
-         * PayU expects keys such as TX_VALUE, TX_TAX, TX_TAX_RETURN_BASE
-         */
         private Map<String, AdditionalValue> additionalValues;
 
-        // Optional confirmation/notification URL
         private String notifyUrl;
     }
 
     @Data
     @Builder
     public static class AdditionalValue {
-        /**
-         * For Colombia, TX_VALUE must not include decimals. Send it as an integer value (BigDecimal scale 0).
-         */
         private BigDecimal value;
         private String currency;
     }
