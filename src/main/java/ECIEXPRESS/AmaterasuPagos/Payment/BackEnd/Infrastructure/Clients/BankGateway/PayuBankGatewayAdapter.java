@@ -267,7 +267,7 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
         return payuMd5Hex(raw);
     }
 
-    @SuppressWarnings("java:S4790") // PayU interoperability requirement (signature)
+    @SuppressWarnings("java:S4790")
     private String payuMd5Hex(String input) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -319,6 +319,10 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
         return bd.setScale(0, RoundingMode.UNNECESSARY);
     }
 
+    private String generateDeviceSessionId() {
+        return UUID.randomUUID().toString().replace("-", "") + Long.toHexString(System.currentTimeMillis());
+    }
+
     private ClientContext resolveClientContext() {
         try {
             ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -346,7 +350,7 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
                 if (sessionId == null) {
                     sessionId = UUID.randomUUID().toString();
                 }
-                deviceSessionId = md5Hex(sessionId + System.currentTimeMillis());
+                deviceSessionId = generateDeviceSessionId();
             }
 
             return new ClientContext(deviceSessionId, ip, cookie, userAgent);
@@ -520,7 +524,7 @@ public class PayuBankGatewayAdapter implements BankGatewayProvider {
 
     private record ClientContext(String deviceSessionId, String ipAddress, String cookie, String userAgent) {
         static ClientContext fallback() {
-            String dsid = md5Static(UUID.randomUUID().toString() + System.currentTimeMillis());
+            String dsid = UUID.randomUUID().toString().replace("-", "") + Long.toHexString(System.currentTimeMillis());
             return new ClientContext(dsid, "127.0.0.1", "", "Unknown");
         }
         private static String md5Static(String input) {
