@@ -79,7 +79,9 @@
             **/Exception/**,
             **/*Application.java,
             **/*ApplicationPayment.java,
-            **/Utils/**
+            **/Utils/**,
+            **/Mappers/**,
+            **/UserServiceClient.java
         </sonar.coverage.exclusions>
         <jacoco.version>0.8.13</jacoco.version>
         <argLine></argLine>
@@ -171,6 +173,7 @@
                 <version>${jacoco.version}</version>
                 <configuration>
                     <excludes>
+                        <exclude>**/UserServiceClient.class</exclude>
                         <exclude>**/Config/**</exclude>
                         <exclude>**/Dto/**</exclude>
                         <exclude>**/Exception/**</exclude>
@@ -194,6 +197,7 @@
                         </goals>
                         <configuration>
                             <excludes>
+                                <exclude>**/UserServiceClient.class</exclude>
                                 <exclude>**/Config/**</exclude>
                                 <exclude>**/Dto/**</exclude>
                                 <exclude>**/Exception/**</exclude>
@@ -224,6 +228,7 @@
                                 </rule>
                             </rules>
                             <excludes>
+                                <exclude>**/UserServiceClient.class</exclude>
                                 <exclude>**/Config/**</exclude>
                                 <exclude>**/Dto/**</exclude>
                                 <exclude>**/Exception/**</exclude>

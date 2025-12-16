@@ -2,7 +2,7 @@ package ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Infrastructure.Clients.Promoti
 
 import java.util.List;
 
-public record PromotionResponse(
+public record ApplyPromotionResponse(
         double finalAmount,
         List<String> appliedPromotions) {
 }

@@ -7,6 +7,7 @@ public record CreatePaymentResponse(
         String orderId,
         String storeId,
         double finalAmount,
-        ReceiptStatus receiptStatus
+        ReceiptStatus receiptStatus,
+        String qrCode
 ) {
 }

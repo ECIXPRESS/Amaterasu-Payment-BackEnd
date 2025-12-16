@@ -5,8 +5,10 @@ import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.BankDetails;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Domain.Model.BankValidationResult;
 import ECIEXPRESS.AmaterasuPagos.Payment.BackEnd.Exception.BankValidationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Slf4j
+@Service
 public class ValidationService implements ValidationUseCases{
 
     @Override
